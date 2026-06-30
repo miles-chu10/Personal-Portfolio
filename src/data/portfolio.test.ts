@@ -4,6 +4,7 @@ import { describe, it } from "node:test";
 import {
   earlier,
   footerLinks,
+  impactRows,
   latest,
   miscLinks,
   profile,
@@ -15,11 +16,13 @@ describe("portfolio content", () => {
     assert.equal(profile.name, "Miles Chu");
     assert.match(profile.email, /^[^\s@]+@[^\s@]+\.[^\s@]+$/);
     assert.ok(profile.title.length > 20);
+    assert.ok(!Object.values(profile).some((value) => /\d{3}[-). ]+\d{3}/.test(value)));
   });
 
   it("has enough rows for the Ambrosino-style sections", () => {
     assert.ok(latest.length >= 3);
     assert.ok(earlier.length >= 3);
+    assert.ok(impactRows.length >= 4);
     assert.ok(skillRows.length >= 4);
     assert.ok(miscLinks.length >= 3);
   });
@@ -31,6 +34,15 @@ describe("portfolio content", () => {
       assert.match(row.markTone, /^#[0-9a-f]{6}$/i);
       assert.ok(row.roles.length > 0);
       assert.ok(row.roles.every((role) => role.title && role.period));
+    }
+  });
+
+  it("keeps impact rows concise and metric-led", () => {
+    for (const row of impactRows) {
+      assert.ok(row.metric.length > 0);
+      assert.ok(row.label.length > 0);
+      assert.ok(row.detail.length > 30);
+      assert.ok(row.detail.length < 140);
     }
   });
 

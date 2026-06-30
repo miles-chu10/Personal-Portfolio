@@ -18,6 +18,12 @@ export type SimpleRow = {
   meta: string;
 };
 
+export type ImpactRow = {
+  metric: string;
+  label: string;
+  detail: string;
+};
+
 export type Link = {
   label: string;
   shortLabel: string;
@@ -33,8 +39,9 @@ export type MiscLink = {
 
 export const profile = {
   name: "Miles Chu",
-  title: "Product-minded Engineer, Builder, Operator",
-  email: "mileschu@gmail.com",
+  title: "GTM Strategy, Revenue Operations, AI Workflow Systems",
+  email: "milesdchu@gmail.com",
+  location: "San Francisco Bay Area",
 };
 
 export const latest: TimelineItem[] = [
@@ -44,9 +51,70 @@ export const latest: TimelineItem[] = [
     markTone: "#f4f4f5",
     roles: [
       {
-        title: "AI workflow and product systems",
-        detail: "Codex, agents, local developer surfaces",
-        period: "2025 -",
+        title: "Member of GTM Staff",
+        detail: "pipeline coverage, RevOps systems, GTM readiness",
+        period: "2025 - 26",
+      },
+      {
+        title: "AI-assisted operating workflows",
+        detail: "Salesforce automation, intake triage, PoC lifecycle tooling",
+        period: "2025 - 26",
+      },
+    ],
+  },
+  {
+    organization: "Docusign",
+    mark: "D",
+    markTone: "#60a5fa",
+    roles: [
+      {
+        title: "Sales Strategy and Operations Analyst",
+        detail: "forecasting, pipeline analytics, executive reporting cadence",
+        period: "2025",
+      },
+    ],
+  },
+  {
+    organization: "IBM",
+    mark: "I",
+    markTone: "#a78bfa",
+    roles: [
+      {
+        title: "Consultant",
+        detail: "GTM playbooks, GenAI support roadmap, enablement systems",
+        period: "2022 - 24",
+      },
+      {
+        title: "Sales Operations and Enablement Lead",
+        detail: "IBM Consulting Advantage, Solution Architect Craft",
+        period: "2022 - 24",
+      },
+    ],
+  },
+];
+
+export const earlier: TimelineItem[] = [
+  {
+    organization: "Esri",
+    mark: "E",
+    markTone: "#22c55e",
+    roles: [
+      {
+        title: "Business Strategy and Analytics Intern",
+        detail: "campaign pipeline, lead conversion, Salesforce and Power BI",
+        period: "2021",
+      },
+    ],
+  },
+  {
+    organization: "UC Riverside",
+    mark: "UC",
+    markTone: "#f59e0b",
+    roles: [
+      {
+        title: "B.S. Business Administration",
+        detail: "marketing concentration",
+        period: "2018 - 22",
       },
     ],
   },
@@ -56,111 +124,88 @@ export const latest: TimelineItem[] = [
     markTone: "#5eead4",
     roles: [
       {
-        title: "Workspace automation and agent control plane",
-        detail: "Skills, MCP, hooks, durable project context",
+        title: "Agent workflow and portfolio experiments",
+        detail: "static-first proof-of-work, local automation, durable context",
         period: "2026",
-      },
-      {
-        title: "Portfolio and proof-of-work artifacts",
-        detail: "Static-first, editable from structured data",
-        period: "2026",
-      },
-    ],
-  },
-  {
-    organization: "Diligence",
-    mark: "D",
-    markTone: "#a78bfa",
-    roles: [
-      {
-        title: "Technical and operating analysis",
-        detail: "Software businesses, GTM systems, data quality",
-        period: "2024 - 25",
       },
     ],
   },
 ];
 
-export const earlier: TimelineItem[] = [
+export const impactRows: ImpactRow[] = [
   {
-    organization: "Product Teams",
-    mark: "PT",
-    markTone: "#60a5fa",
-    roles: [
-      {
-        title: "Software engineer",
-        detail: "Production web apps, internal tools, user workflows",
-        period: "Earlier",
-      },
-    ],
+    metric: "$250M+",
+    label: "Pipeline decisions",
+    detail:
+      "Owned coverage, hygiene, and risk metrics for executive GTM operating cadence.",
   },
   {
-    organization: "Research",
-    mark: "R",
-    markTone: "#f59e0b",
-    roles: [
-      {
-        title: "Systems mapping and market research",
-        detail: "Operating leverage, process design, data workflows",
-        period: "Earlier",
-      },
-    ],
+    metric: "45-50%",
+    label: "Faster RevOps intake",
+    detail:
+      "Automated request triage across Google Sheets, Apps Script, and Slack workflows.",
   },
   {
-    organization: "Education",
-    mark: "E",
-    markTone: "#22c55e",
-    roles: [
-      {
-        title: "Product, engineering, and business foundations",
-        detail: "Cross-functional execution and analysis",
-        period: "Earlier",
-      },
-    ],
+    metric: "$1.5B+",
+    label: "Forecasting surface",
+    detail:
+      "Analyzed global pipeline coverage, deal quality, and conversion thresholds.",
+  },
+  {
+    metric: "800+",
+    label: "Hours removed annually",
+    detail:
+      "Built SQL-driven KPI tracking and reporting automation for sales leadership.",
   },
 ];
 
 export const skillRows: SimpleRow[] = [
   {
-    label: "Frontend",
-    value: "React, Next.js, TypeScript, Tailwind CSS",
-    meta: "UI",
+    label: "GTM Ops",
+    value: "Salesforce, forecasting, pipeline analytics, rhythm of business",
+    meta: "RevOps",
   },
   {
-    label: "Systems",
-    value: "APIs, automation, observability, local tooling",
-    meta: "Infra",
+    label: "Analytics",
+    value: "SQL, Tableau, Power BI, Excel, Google Sheets",
+    meta: "BI",
   },
   {
-    label: "AI",
-    value: "OpenAI API, agent workflows, MCP, evaluation loops",
-    meta: "Tools",
-  },
-  {
-    label: "Product",
-    value: "Roadmaps, research, diligence, systems thinking",
+    label: "Automation",
+    value: "Google Apps Script, Slack workflows, n8n, Docker",
     meta: "Ops",
+  },
+  {
+    label: "AI Systems",
+    value: "OpenAI Codex, Claude Code, Custom GPTs, workflow evaluation",
+    meta: "AI",
+  },
+  {
+    label: "Certs",
+    value:
+      "Salesforce Admin, Marketing Cloud Admin, Business Analyst, Associate, AI Associate",
+    meta: "SFDC",
   },
 ];
 
 export const miscLinks: MiscLink[] = [
   {
     year: "2026",
-    title: "Personal portfolio system",
-    source: "This repo",
+    title: "Personal portfolio system and checkpoints",
+    source: "GitHub",
     href: "https://github.com/miles-chu10",
   },
   {
     year: "2026",
-    title: "Agent workspace experiments",
+    title: "Agent workflow experiments",
     source: "Local builds",
     href: "https://github.com/miles-chu10",
   },
   {
     year: "2025",
-    title: "Product and diligence notes",
-    source: "Selected writing",
-    href: "https://www.linkedin.com/in/mileschu/",
+    title: "Revenue operations and GTM systems",
+    source: "Selected work",
+    href: "https://www.linkedin.com/in/miles-chu/",
   },
 ];
 
@@ -168,7 +213,7 @@ export const footerLinks: Link[] = [
   {
     label: "LinkedIn",
     shortLabel: "in",
-    href: "https://www.linkedin.com/in/mileschu/",
+    href: "https://www.linkedin.com/in/miles-chu/",
   },
   {
     label: "GitHub",
@@ -184,6 +229,11 @@ export const footerLinks: Link[] = [
     label: "Work",
     shortLabel: "wk",
     href: "#latest",
+  },
+  {
+    label: "Impact",
+    shortLabel: "im",
+    href: "#impact",
   },
   {
     label: "Skills",

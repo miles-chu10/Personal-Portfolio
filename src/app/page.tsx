@@ -1,10 +1,12 @@
 import {
   earlier,
   footerLinks,
+  impactRows,
   latest,
   miscLinks,
   profile,
   skillRows,
+  type ImpactRow,
   type Link,
   type MiscLink,
   type SimpleRow,
@@ -27,6 +29,7 @@ export default function Home() {
         <div className="space-y-16">
           <TimelineSection id="latest" title="Latest" items={latest} />
           <TimelineSection title="Earlier" items={earlier} />
+          <ImpactSection rows={impactRows} />
           <SkillsSection rows={skillRows} />
           <MiscSection links={miscLinks} />
         </div>
@@ -105,6 +108,32 @@ function TimelineRow({ item }: { item: TimelineItem }) {
         </div>
       </div>
     </article>
+  );
+}
+
+function ImpactSection({ rows }: { rows: ImpactRow[] }) {
+  return (
+    <section id="impact" aria-labelledby="impact-heading">
+      <SectionHeading title="Impact" />
+      <div className="grid border-t border-line sm:grid-cols-2">
+        {rows.map((row) => (
+          <div
+            className="border-b border-line py-4 sm:odd:border-r sm:odd:pr-5 sm:even:pl-5"
+            key={`${row.metric}-${row.label}`}
+          >
+            <p className="text-[1.25rem] font-semibold leading-6 text-foreground">
+              {row.metric}
+            </p>
+            <p className="mt-2 text-[0.95rem] font-medium leading-5 text-foreground">
+              {row.label}
+            </p>
+            <p className="mt-1 text-[0.95rem] leading-5 text-muted">
+              {row.detail}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 

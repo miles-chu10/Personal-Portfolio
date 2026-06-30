@@ -4,6 +4,9 @@ This document is the source of truth for the current portfolio UI. It describes
 the Ambrosino-inspired static v1 implemented in `src/app/page.tsx`,
 `src/app/globals.css`, and `src/data/portfolio.ts`.
 
+Use `CHECKPOINTS.md` to record version-level acceptance gates after each
+meaningful website iteration.
+
 ## Checkpoints
 
 - [x] Confirmed repo state and moved work to `codex/design-doc-and-qa`.
@@ -51,6 +54,8 @@ Intentional v1 divergences from the reference:
 - Keep all public-facing content easy to revise before publication; verify
   personal email, social URLs, company references, and role language before
   shipping a production domain.
+- Derive public content from resume/source material, but filter out phone
+  numbers, private document URLs, and any detail that should not be indexed.
 
 ## Tokens
 
@@ -101,6 +106,8 @@ Timeline rows use a two-stage grid:
 
 Skills and misc sections follow the same row rhythm:
 
+- Impact: compact metric-led cells in a two-column desktop grid and one-column
+  mobile stack.
 - Skills: on mobile, label and metadata share the first row while the value
   spans the full row below; at `sm`, label, value, and metadata align into
   three columns.
@@ -128,6 +135,7 @@ All portfolio facts live in `src/data/portfolio.ts`.
 
 - `profile` drives the header and email link.
 - `latest` and `earlier` render timeline sections.
+- `impactRows` renders metric-led proof points.
 - `skillRows` renders the skills table.
 - `miscLinks` renders external writing/project references.
 - `footerLinks` renders the fixed dock.
