@@ -1,3 +1,6 @@
+import Image from "next/image";
+
+import { PortfolioChat } from "@/components/PortfolioChat";
 import {
   earlier,
   footerLinks,
@@ -65,12 +68,16 @@ function TimelineRow({ item }: { item: TimelineItem }) {
   return (
     <article className="group border-t border-line py-4 transition-colors hover:border-line-strong">
       <div className="grid grid-cols-[1.5rem_minmax(0,1fr)] gap-x-3 sm:grid-cols-[1.5rem_6.25rem_minmax(0,1fr)] sm:gap-x-5">
-        <span
-          className="mt-[0.2rem] flex size-5 shrink-0 items-center justify-center rounded-[0.28rem] text-[0.56rem] font-semibold leading-none text-background"
-          style={{ backgroundColor: item.markTone }}
-          aria-hidden="true"
-        >
-          {item.mark}
+        <span className="mt-[0.2rem] flex size-5 shrink-0 items-center justify-center">
+          <Image
+            alt=""
+            aria-hidden="true"
+            className="size-5 object-contain"
+            height={20}
+            src={item.logo.src}
+            unoptimized
+            width={20}
+          />
         </span>
 
         <h3 className="text-[0.95rem] font-medium leading-5 text-foreground">
@@ -214,7 +221,7 @@ function FooterDock({ links }: { links: Link[] }) {
       className="pointer-events-none fixed inset-x-0 bottom-0 z-20"
     >
       <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-background via-background/95 to-transparent" />
-      <div className="relative mx-auto flex max-w-[42rem] items-center justify-between px-10 pb-5 pt-8 sm:px-16">
+      <div className="relative mx-auto flex max-w-[42rem] items-center justify-between gap-2 px-8 pb-[calc(1.25rem+env(safe-area-inset-bottom))] pt-8 sm:px-16">
         {links.map((link) => (
           <a
             aria-label={link.label}
@@ -227,6 +234,7 @@ function FooterDock({ links }: { links: Link[] }) {
             {link.shortLabel}
           </a>
         ))}
+        <PortfolioChat />
       </div>
     </nav>
   );

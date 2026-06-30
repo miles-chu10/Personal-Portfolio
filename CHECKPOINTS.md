@@ -43,11 +43,38 @@ clear purpose, content source, validation gates, and known risks.
 - Result: complete locally; GitHub publishing depends on a valid GitHub remote
   and refreshed CLI authentication.
 
+## v0.3 - Agents SDK Chat and Logo Dock
+
+- Purpose: make the OpenAI Agents SDK assistant visible in the portfolio UI and
+  bring timeline marks closer to the Ambrosino reference with compact logo
+  assets.
+- Source: current repo implementation, OpenAI Agents SDK docs, Ambrosino public
+  reference HTML.
+- Changes:
+  - Add `src/components/PortfolioChat.tsx` as the bottom-dock AI Chat control
+    and panel backed by `/api/agent`.
+  - Replace timeline text badges with local SVG logo assets under
+    `public/img/logos/`.
+  - Keep the server-side portfolio agent on `@openai/agents` with a grounded
+    `portfolio_snapshot` tool.
+- Validation: passed `npm test`, `npm run typecheck`, `npm run lint`,
+  `npm run build`, and IntelliJ inspections for the changed TypeScript files;
+  local preview at `http://127.0.0.1:3000/` returned 200 and `/api/agent`
+  returned a live answer with local `.env.local`.
+- Publish hygiene: local `.ai/`, `.claude/`, Copilot prompt scratch files, and
+  `.env.local` are ignored; `.env.example` documents the optional key.
+- Remaining QA: browser screenshot verification was not run in this session
+  because no Browser/agent-browser control tool was exposed and Playwright is
+  not installed in the project.
+
 ## v1.0 - Public Launch Candidate
 
 - Purpose: publish a durable first public version.
 - Required before launch:
   - Confirm email, LinkedIn, GitHub, company references, dates, and metrics.
+  - Configure `OPENAI_API_KEY` in the deployment environment if the AI chat
+    should be enabled publicly; otherwise the endpoint returns a 503
+    configuration response.
   - Replace generic GitHub links with live repo/project links once available.
   - Add a downloadable public resume only if it is intentionally sanitized.
   - Re-run all validation gates and update this file with the launch commit.

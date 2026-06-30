@@ -7,8 +7,10 @@ export type RoleLine = {
 
 export type TimelineItem = {
   organization: string;
-  mark: string;
-  markTone: string;
+  logo: {
+    src: string;
+    alt: string;
+  };
   roles: RoleLine[];
 };
 
@@ -47,8 +49,10 @@ export const profile = {
 export const latest: TimelineItem[] = [
   {
     organization: "OpenAI",
-    mark: "O",
-    markTone: "#f4f4f5",
+    logo: {
+      src: "/img/logos/openai.svg",
+      alt: "OpenAI",
+    },
     roles: [
       {
         title: "Member of GTM Staff",
@@ -64,8 +68,10 @@ export const latest: TimelineItem[] = [
   },
   {
     organization: "Docusign",
-    mark: "D",
-    markTone: "#60a5fa",
+    logo: {
+      src: "/img/logos/docusign.svg",
+      alt: "Docusign",
+    },
     roles: [
       {
         title: "Sales Strategy and Operations Analyst",
@@ -76,8 +82,10 @@ export const latest: TimelineItem[] = [
   },
   {
     organization: "IBM",
-    mark: "I",
-    markTone: "#a78bfa",
+    logo: {
+      src: "/img/logos/ibm.svg",
+      alt: "IBM",
+    },
     roles: [
       {
         title: "Consultant",
@@ -96,8 +104,10 @@ export const latest: TimelineItem[] = [
 export const earlier: TimelineItem[] = [
   {
     organization: "Esri",
-    mark: "E",
-    markTone: "#22c55e",
+    logo: {
+      src: "/img/logos/esri.svg",
+      alt: "Esri",
+    },
     roles: [
       {
         title: "Business Strategy and Analytics Intern",
@@ -108,8 +118,10 @@ export const earlier: TimelineItem[] = [
   },
   {
     organization: "UC Riverside",
-    mark: "UC",
-    markTone: "#f59e0b",
+    logo: {
+      src: "/img/logos/uc-riverside.svg",
+      alt: "UC Riverside",
+    },
     roles: [
       {
         title: "B.S. Business Administration",
@@ -120,8 +132,10 @@ export const earlier: TimelineItem[] = [
   },
   {
     organization: "Personal Systems",
-    mark: "PS",
-    markTone: "#5eead4",
+    logo: {
+      src: "/img/logos/personal-systems.svg",
+      alt: "Personal Systems",
+    },
     roles: [
       {
         title: "Agent workflow and portfolio experiments",

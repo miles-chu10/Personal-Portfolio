@@ -1,8 +1,9 @@
 # Personal Portfolio Design System
 
 This document is the source of truth for the current portfolio UI. It describes
-the Ambrosino-inspired static v1 implemented in `src/app/page.tsx`,
-`src/app/globals.css`, and `src/data/portfolio.ts`.
+the Ambrosino-inspired portfolio implemented in `src/app/page.tsx`,
+`src/components/PortfolioChat.tsx`, `src/app/globals.css`, and
+`src/data/portfolio.ts`.
 
 Use `CHECKPOINTS.md` to record version-level acceptance gates after each
 meaningful website iteration.
@@ -35,9 +36,9 @@ metadata, compact row hierarchy, hairline dividers, and fixed bottom link dock.
 Use Miles-specific content and avoid copying third-party copy, marks, or
 employment claims.
 
-Intentional v1 divergences from the reference:
+Intentional divergences from the reference:
 
-- Timeline marks are compact text swatches, not copied company logos.
+- Timeline logos are local compact SVG assets, not hotlinked reference assets.
 - The site uses a system sans stack, not a custom font pairing.
 - The reference licenses/press mix is replaced by Miles-specific `Skills` and
   `Misc` sections.
@@ -71,7 +72,7 @@ Intentional v1 divergences from the reference:
 | `--font-sans-system` | system UI stack | All typography |
 
 The palette should remain near-neutral and dark. Accent color belongs only in
-small timeline marks through `markTone`; do not expand accent colors into page
+small logo assets and interaction states; do not expand accent colors into page
 backgrounds, cards, gradients, or large decorative surfaces.
 
 ## Typography
@@ -96,7 +97,7 @@ The page shell is a single centered column:
 
 Timeline rows use a two-stage grid:
 
-- Mobile: `1.5rem minmax(0, 1fr)` for mark and organization. Role/date pairs
+- Mobile: `1.5rem minmax(0, 1fr)` for logo and organization. Role/date pairs
   begin in column two below the organization.
 - Desktop: `1.5rem 6.25rem minmax(0, 1fr)` so organization labels align in a
   fixed column and role/date content scans as a table.
@@ -120,6 +121,8 @@ The footer dock is a fixed `nav` with `aria-label="Portfolio links"`.
 
 - Keep links compact and icon-like through `shortLabel`; each link must still
   have a descriptive `aria-label`.
+- Keep the AI Chat control in the dock as an icon button; the chat panel opens
+  above the dock and calls `/api/agent`.
 - Preserve the bottom gradient fade so content scrolls behind the dock without
   a hard edge.
 - Keep touch targets at least `2rem` high and ensure all links are reachable by
@@ -140,10 +143,9 @@ All portfolio facts live in `src/data/portfolio.ts`.
 - `miscLinks` renders external writing/project references.
 - `footerLinks` renders the fixed dock.
 
-Every timeline item needs an organization, compact mark, valid six-digit hex
-`markTone`, and at least one role with a title and period. Prefer short role
-titles and put secondary context in `detail` so mobile wrapping remains
-controlled.
+Every timeline item needs an organization, local SVG logo metadata, and at
+least one role with a title and period. Prefer short role titles and put
+secondary context in `detail` so mobile wrapping remains controlled.
 
 ## Accessibility And Interaction
 
@@ -153,6 +155,8 @@ controlled.
 - Preserve `focus-visible` outlines and reduced-motion handling.
 - Hover effects should be subtle: divider strengthening, text color change, or
   the misc arrow shifting by at most `0.125rem`.
+- Agent responses should stay plain text unless a markdown renderer is added to
+  the chat component.
 - Validate that mobile and desktop have no horizontal overflow and no text
   overlap before shipping.
 
@@ -163,13 +167,14 @@ Update this section after every meaningful visual or content-system change.
 | Check | Status | Notes |
 | --- | --- | --- |
 | Sub-agent design audit | Passed | Ohm confirmed the core layout matches the reference pattern and noted v1 gaps above. |
-| `npm run lint` | Passed | ESLint completed without findings. |
-| `npm run typecheck` | Passed | `tsc --noEmit` completed successfully. |
-| `npm test` | Passed | 4 portfolio data tests passed. |
-| `npm run build` | Passed | Next.js static production build passed; sandbox run was blocked by Turbopack port binding, escalated run passed. |
-| Browser desktop | Passed | Browser verified 1280x900: no page overflow, no visual overflow, footer visible, 4 sections, 6 timeline articles, no console warnings/errors. |
-| Browser mobile | Passed | Browser verified 390x844 and 320x780: no page overflow, no visual overflow, footer visible, 5 dock links, no console warnings/errors. |
-| Final review | Passed | Aquinas found no blocking issues; residual risks are Figma/MagicPath non-authoritative status and content/link confirmation before public launch. |
+| `npm run lint` | Passed | ESLint completed without findings after the logo and chat update. |
+| `npm run typecheck` | Passed | `tsc --noEmit` completed successfully after fixing chat response narrowing. |
+| `npm test` | Passed | 11 tests passed across portfolio data, agent config, route validation, and missing-key handling. |
+| `npm run build` | Passed | Next.js production build passed; sandbox run was blocked by Turbopack port binding, escalated run passed. |
+| Local HTTP preview | Passed | Existing dev server at `http://127.0.0.1:3000/` returned 200 with logo SVG paths and the AI chat dock button; `/api/agent` returned a live answer with local `.env.local`. |
+| IntelliJ inspections | Passed | No IDE problems reported for the agent route, agent tests, chat component, or agent helper after cleanup. |
+| Browser desktop/mobile | Not run this pass | Browser plugin was not exposed and Playwright is not installed in the project. Earlier static-v1 Browser QA covered 1280x900, 390x844, and 320x780 before this chat/logo iteration. |
+| Final review | Passed with caveat | Publish hygiene reviewed; visual screenshot QA still needs a browser tool before public launch. |
 
 ## Known Gaps
 

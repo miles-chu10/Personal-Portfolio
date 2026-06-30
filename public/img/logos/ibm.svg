@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-labelledby="title">
+  <title id="title">IBM</title>
+  <rect width="32" height="32" rx="7" fill="#0f62fe"/>
+  <g fill="#fff">
+    <path d="M6 9h20v2H6zM6 13h20v2H6zM6 17h20v2H6zM6 21h20v2H6z"/>
+  </g>
+  <g fill="#0f62fe">
+    <path d="M9 9h2v14H9zM15 9h2v14h-2zM20 9h3v14h-3z"/>
+  </g>
+</svg>

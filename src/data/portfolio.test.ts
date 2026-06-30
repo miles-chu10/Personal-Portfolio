@@ -30,8 +30,9 @@ describe("portfolio content", () => {
   it("keeps timeline rows display-ready", () => {
     for (const row of [...latest, ...earlier]) {
       assert.ok(row.organization.length > 0);
-      assert.ok(row.mark.length > 0);
-      assert.match(row.markTone, /^#[0-9a-f]{6}$/i);
+      assert.ok(row.logo.src.startsWith("/img/logos/"));
+      assert.ok(row.logo.src.endsWith(".svg"));
+      assert.ok(row.logo.alt.length > 0);
       assert.ok(row.roles.length > 0);
       assert.ok(row.roles.every((role) => role.title && role.period));
     }

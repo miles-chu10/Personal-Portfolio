@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-labelledby="title">
+  <title id="title">Personal Systems</title>
+  <rect width="32" height="32" rx="7" fill="#2dd4bf"/>
+  <path fill="none" stroke="#042f2e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m9 12 4 4-4 4M15 21h8"/>
+</svg>
