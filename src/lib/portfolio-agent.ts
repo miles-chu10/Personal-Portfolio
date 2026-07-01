@@ -45,15 +45,16 @@ export type PortfolioAgentRunner = (
   input: string,
 ) => Promise<{ finalOutput?: unknown }>;
 
+export type PortfolioAgentStreamRunner = (
+  agent: PortfolioAgent,
+  input: string,
+) => Promise<AsyncIterable<string>>;
+
 export async function runPortfolioAgent(
   question: string,
   runner: PortfolioAgentRunner = runPortfolioAgentWithSdk,
 ) {
-  const normalizedQuestion = question.trim();
-
-  if (!normalizedQuestion) {
-    throw new Error("Question is required.");
-  }
+  const normalizedQuestion = normalizeQuestion(question);
 
   const result = await runner(createPortfolioAgent(), normalizedQuestion);
   const output = result.finalOutput;
@@ -65,10 +66,41 @@ export async function runPortfolioAgent(
   return output.trim();
 }
 
+export async function runPortfolioAgentStream(
+  question: string,
+  runner: PortfolioAgentStreamRunner = runPortfolioAgentStreamWithSdk,
+) {
+  const normalizedQuestion = normalizeQuestion(question);
+
+  return runner(createPortfolioAgent(), normalizedQuestion);
+}
+
 function runPortfolioAgentWithSdk(agent: PortfolioAgent, input: string) {
   return run(agent, input, {
     maxTurns: 4,
   });
+}
+
+async function runPortfolioAgentStreamWithSdk(
+  agent: PortfolioAgent,
+  input: string,
+) {
+  const result = await run(agent, input, {
+    maxTurns: 4,
+    stream: true,
+  });
+
+  return result.toTextStream();
+}
+
+function normalizeQuestion(question: string) {
+  const normalizedQuestion = question.trim();
+
+  if (!normalizedQuestion) {
+    throw new Error("Question is required.");
+  }
+
+  return normalizedQuestion;
 }
 
 function getPortfolioSnapshot(section: z.infer<typeof sectionSchema>) {

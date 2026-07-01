@@ -1,4 +1,4 @@
-import { runPortfolioAgent } from "@/lib/portfolio-agent";
+import { runPortfolioAgentStream } from "@/lib/portfolio-agent";
 
 export const runtime = "nodejs";
 
@@ -21,9 +21,14 @@ export async function POST(request: Request) {
       );
     }
 
-    const answer = await runPortfolioAgent(question);
+    const stream = await runPortfolioAgentStream(question);
 
-    return Response.json({ answer });
+    return new Response(toUtf8Stream(stream), {
+      headers: {
+        "Cache-Control": "no-store",
+        "Content-Type": "text/plain; charset=utf-8",
+      },
+    });
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Portfolio agent failed.";
@@ -39,4 +44,22 @@ export async function POST(request: Request) {
       { status: 500 },
     );
   }
+}
+
+function toUtf8Stream(stream: AsyncIterable<string>) {
+  const encoder = new TextEncoder();
+
+  return new ReadableStream<Uint8Array>({
+    async start(controller) {
+      try {
+        for await (const chunk of stream) {
+          controller.enqueue(encoder.encode(chunk));
+        }
+
+        controller.close();
+      } catch (error) {
+        controller.error(error);
+      }
+    },
+  });
 }

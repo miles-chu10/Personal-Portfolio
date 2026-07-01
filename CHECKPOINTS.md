@@ -67,6 +67,34 @@ clear purpose, content source, validation gates, and known risks.
   because no Browser/agent-browser control tool was exposed and Playwright is
   not installed in the project.
 
+## v0.4 - Streaming Chat and Editorial Touch-Up
+
+- Purpose: polish the existing dark editorial portfolio while upgrading the
+  OpenAI Agents SDK assistant to stream plain-text answers.
+- Source: current repo implementation, z.ai export used only as visual
+  reference, installed `@openai/agents` stream types, local ChatGPT/Codex app
+  icon assets.
+- Changes:
+  - Switch successful `POST /api/agent` responses to a UTF-8 text stream backed
+    by `run(agent, input, { stream: true })` and `toTextStream()`.
+  - Add submitted, streaming, empty, error, retry, clear, keyboard submit, and
+    close states to `PortfolioChat`.
+  - Replace the hand-drawn chat mark with the local ChatGPT app icon and add a
+    small Codex icon badge in the chat header.
+  - Tighten timeline date rhythm with tabular numerals, fixed date columns, and
+    stable hover/focus row states.
+  - Improve footer dock affordances with clearer hover/focus targets and
+    labels while keeping compact `shortLabel` links.
+- Validation: passed `npm run lint`, `npm run typecheck`, `npm test`, and
+  `npm run build`; local HTTP preview returned 200 for `/` and the ChatGPT
+  asset; `/api/agent` streamed a live grounded answer with local `.env.local`.
+- Browser QA: headless Chrome verified 1280x900, 390x844, and 320x780 with the
+  chat panel open; no horizontal overflow, no footer/chat overlap, and brand
+  images loaded. Screenshots are in `/private/tmp/portfolio-*-chat-open.png`.
+- Figma artifact: created
+  `https://www.figma.com/design/GSK3DLtmt9S9IsFSvlHpam`; capture/import was
+  blocked by the Figma Starter MCP tool-call limit.
+
 ## v1.0 - Public Launch Candidate
 
 - Purpose: publish a durable first public version.

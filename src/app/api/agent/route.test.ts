@@ -16,6 +16,18 @@ describe("portfolio agent route", () => {
     assert.deepEqual(await response.json(), { error: "Question is required." });
   });
 
+  it("returns a validation error when question is blank", async () => {
+    const response = await POST(
+      new Request("http://localhost/api/agent", {
+        method: "POST",
+        body: JSON.stringify({ question: "   " }),
+      }),
+    );
+
+    assert.equal(response.status, 400);
+    assert.deepEqual(await response.json(), { error: "Question is required." });
+  });
+
   it("returns an intentional unavailable response when the API key is absent", async () => {
     const currentKey = process.env.OPENAI_API_KEY;
     delete process.env.OPENAI_API_KEY;

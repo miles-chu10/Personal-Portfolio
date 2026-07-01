@@ -101,9 +101,10 @@ Timeline rows use a two-stage grid:
   begin in column two below the organization.
 - Desktop: `1.5rem 6.25rem minmax(0, 1fr)` so organization labels align in a
   fixed column and role/date content scans as a table.
-- Role rows use `minmax(0, 1fr)` plus a fixed date column of `4.75rem` mobile
-  and `5.5rem` desktop.
-- Rows have `border-t` dividers and `1rem` vertical padding.
+- Role rows use `minmax(0, 1fr)` plus a fixed date column of `5rem` mobile
+  and `5.75rem` desktop. Dates use tabular numerals for steadier scanning.
+- Rows have `border-t` dividers, `1rem` vertical padding, and subtle
+  hover/focus backgrounds without changing row dimensions.
 
 Skills and misc sections follow the same row rhythm:
 
@@ -121,8 +122,8 @@ The footer dock is a fixed `nav` with `aria-label="Portfolio links"`.
 
 - Keep links compact and icon-like through `shortLabel`; each link must still
   have a descriptive `aria-label`.
-- Keep the AI Chat control in the dock as an icon button; the chat panel opens
-  above the dock and calls `/api/agent`.
+- Keep the AI Chat control in the dock as an icon button using the local
+  ChatGPT app icon; the chat panel opens above the dock and calls `/api/agent`.
 - Preserve the bottom gradient fade so content scrolls behind the dock without
   a hard edge.
 - Keep touch targets at least `2rem` high and ensure all links are reachable by
@@ -166,15 +167,14 @@ Update this section after every meaningful visual or content-system change.
 
 | Check | Status | Notes |
 | --- | --- | --- |
-| Sub-agent design audit | Passed | Ohm confirmed the core layout matches the reference pattern and noted v1 gaps above. |
-| `npm run lint` | Passed | ESLint completed without findings after the logo and chat update. |
-| `npm run typecheck` | Passed | `tsc --noEmit` completed successfully after fixing chat response narrowing. |
-| `npm test` | Passed | 11 tests passed across portfolio data, agent config, route validation, and missing-key handling. |
+| `npm run lint` | Passed | ESLint completed without findings after the streaming chat and row rhythm update. |
+| `npm run typecheck` | Passed | `tsc --noEmit` completed successfully after adapting the Agents SDK stream to an async iterable. |
+| `npm test` | Passed | 14 tests passed across portfolio data, agent config, route validation, missing-key handling, and injectable stream behavior. |
 | `npm run build` | Passed | Next.js production build passed; sandbox run was blocked by Turbopack port binding, escalated run passed. |
-| Local HTTP preview | Passed | Existing dev server at `http://127.0.0.1:3000/` returned 200 with logo SVG paths and the AI chat dock button; `/api/agent` returned a live answer with local `.env.local`. |
-| IntelliJ inspections | Passed | No IDE problems reported for the agent route, agent tests, chat component, or agent helper after cleanup. |
-| Browser desktop/mobile | Not run this pass | Browser plugin was not exposed and Playwright is not installed in the project. Earlier static-v1 Browser QA covered 1280x900, 390x844, and 320x780 before this chat/logo iteration. |
-| Final review | Passed with caveat | Publish hygiene reviewed; visual screenshot QA still needs a browser tool before public launch. |
+| Local HTTP preview | Passed | Dev server at `http://127.0.0.1:3010/` returned 200; ChatGPT brand asset returned 200; `/api/agent` streamed a live grounded answer with local `.env.local`. |
+| Browser desktop/mobile | Passed | Headless Chrome QA covered 1280x900, 390x844, and 320x780 with the chat panel open: no horizontal overflow, no footer/chat overlap, and brand images loaded. Screenshots saved in `/private/tmp/portfolio-*-chat-open.png`. |
+| Figma artifact | Partial | Created `Personal Portfolio Touch-Up QA` at `https://www.figma.com/design/GSK3DLtmt9S9IsFSvlHpam`; page capture was blocked by the Figma Starter MCP tool-call limit. |
+| Final review | Passed | Final diff reviewed for scope; pre-existing `AGENTS.md` and `claude-agent.prompt.md` were left untouched. |
 
 ## Known Gaps
 
