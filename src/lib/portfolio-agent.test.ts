@@ -4,7 +4,9 @@ import { describe, it } from "node:test";
 import {
   createPortfolioAgent,
   runPortfolioAgent,
+  runPortfolioAgentStream,
   type PortfolioAgentRunner,
+  type PortfolioAgentStreamRunner,
 } from "./portfolio-agent";
 
 describe("portfolio agent", () => {
@@ -47,6 +49,37 @@ describe("portfolio agent", () => {
     );
   });
 
+  it("streams through an injectable runner and trims input", async () => {
+    const calls: string[] = [];
+    const runner: PortfolioAgentStreamRunner = async (_agent, input) => {
+      calls.push(input);
+
+      return streamChunks(["Miles builds ", "AI workflow systems."]);
+    };
+
+    const stream = await runPortfolioAgentStream(
+      "  What does Miles build?  ",
+      runner,
+    );
+
+    assert.deepEqual(calls, ["What does Miles build?"]);
+    assert.equal(
+      await readTextStream(stream),
+      "Miles builds AI workflow systems.",
+    );
+  });
+
+  it("rejects empty streaming questions before calling the SDK", async () => {
+    const runner: PortfolioAgentStreamRunner = async () => {
+      throw new Error("runner should not be called");
+    };
+
+    await assert.rejects(
+      () => runPortfolioAgentStream("   ", runner),
+      /Question is required/,
+    );
+  });
+
   it("rejects empty SDK responses", async () => {
     const runner: PortfolioAgentRunner = async () => ({ finalOutput: "" });
 
@@ -56,3 +89,19 @@ describe("portfolio agent", () => {
     );
   });
 });
+
+async function* streamChunks(chunks: string[]) {
+  for (const chunk of chunks) {
+    yield chunk;
+  }
+}
+
+async function readTextStream(stream: AsyncIterable<string>) {
+  let text = "";
+
+  for await (const chunk of stream) {
+    text += chunk;
+  }
+
+  return text;
+}

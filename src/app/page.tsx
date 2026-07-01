@@ -66,7 +66,7 @@ function TimelineSection({
 
 function TimelineRow({ item }: { item: TimelineItem }) {
   return (
-    <article className="group border-t border-line py-4 transition-colors hover:border-line-strong">
+    <article className="group -mx-2 rounded-[0.35rem] border-t border-line px-2 py-4 transition-colors hover:border-line-strong hover:bg-foreground/[0.025] focus-within:border-line-strong focus-within:bg-foreground/[0.025]">
       <div className="grid grid-cols-[1.5rem_minmax(0,1fr)] gap-x-3 sm:grid-cols-[1.5rem_6.25rem_minmax(0,1fr)] sm:gap-x-5">
         <span className="mt-[0.2rem] flex size-5 shrink-0 items-center justify-center">
           <Image
@@ -87,7 +87,7 @@ function TimelineRow({ item }: { item: TimelineItem }) {
         <div className="col-start-2 mt-2 space-y-1 sm:col-start-3 sm:mt-0">
           {item.roles.map((role) => (
             <div
-              className="grid grid-cols-[minmax(0,1fr)_4.75rem] gap-x-3 sm:grid-cols-[minmax(0,1fr)_5.5rem] sm:gap-x-4"
+              className="grid grid-cols-[minmax(0,1fr)_5rem] gap-x-3 sm:grid-cols-[minmax(0,1fr)_5.75rem] sm:gap-x-4"
               key={`${role.title}-${role.period}`}
             >
               <p className="min-w-0 text-[0.95rem] leading-5 text-foreground">
@@ -107,7 +107,7 @@ function TimelineRow({ item }: { item: TimelineItem }) {
                   </span>
                 ) : null}
               </p>
-              <p className="text-right text-[0.95rem] leading-5 text-muted">
+              <p className="text-right text-[0.95rem] leading-5 text-muted tabular-nums">
                 {role.period}
               </p>
             </div>
@@ -183,7 +183,7 @@ function MiscSection({ links }: { links: MiscLink[] }) {
             rel="noreferrer"
             target="_blank"
           >
-            <span className="text-[0.95rem] leading-5 text-muted">
+            <span className="text-[0.95rem] leading-5 text-muted tabular-nums">
               {link.year}
             </span>
             <span className="min-w-0 text-[0.95rem] leading-5 text-foreground">
@@ -225,11 +225,12 @@ function FooterDock({ links }: { links: Link[] }) {
         {links.map((link) => (
           <a
             aria-label={link.label}
-            className="pointer-events-auto flex h-8 min-w-8 items-center justify-center rounded-full text-[0.72rem] font-medium leading-none text-muted transition-colors hover:text-foreground focus-visible:text-foreground"
+            className="pointer-events-auto flex h-8 min-w-8 items-center justify-center rounded-sm border border-transparent px-1.5 text-[0.72rem] font-medium leading-none text-muted transition-colors hover:border-line hover:bg-foreground/5 hover:text-foreground focus-visible:border-line-strong focus-visible:text-foreground"
             href={link.href}
             key={link.href}
             rel={link.href.startsWith("http") ? "noreferrer" : undefined}
             target={link.href.startsWith("http") ? "_blank" : undefined}
+            title={link.label}
           >
             {link.shortLabel}
           </a>
