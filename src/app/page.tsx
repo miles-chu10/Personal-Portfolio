@@ -1,17 +1,16 @@
 import Image from "next/image";
 
-import { PortfolioChat } from "@/components/PortfolioChat";
+import { FooterDock } from "@/components/FooterDock";
+import { HeaderSocialLinks } from "@/components/HeaderSocialLinks";
 import {
   earlier,
   footerLinks,
   impactRows,
   latest,
-  miscLinks,
   profile,
   skillRows,
+  socialLinks,
   type ImpactRow,
-  type Link,
-  type MiscLink,
   type SimpleRow,
   type TimelineItem,
 } from "@/data/portfolio";
@@ -27,14 +26,22 @@ export default function Home() {
           <p className="mt-3 text-[0.96rem] leading-5 text-muted">
             {profile.title}
           </p>
+          <p className="mt-2 text-[0.95rem] leading-5 text-subtle">
+            {profile.location} ·{" "}
+            <a
+              className="underline decoration-foreground/30 transition-colors hover:text-foreground hover:decoration-foreground"
+              href={`mailto:${profile.email}`}
+            >
+              {profile.email}
+            </a>
+          </p>
+          <HeaderSocialLinks links={socialLinks} />
         </header>
 
         <div className="space-y-16">
-          <TimelineSection id="latest" title="Latest" items={latest} />
-          <TimelineSection title="Earlier" items={earlier} />
+          <WorkSection latestItems={latest} earlierItems={earlier} />
           <ImpactSection rows={impactRows} />
           <SkillsSection rows={skillRows} />
-          <MiscSection links={miscLinks} />
         </div>
       </div>
 
@@ -43,51 +50,74 @@ export default function Home() {
   );
 }
 
-function TimelineSection({
-  id,
-  title,
-  items,
+function WorkSection({
+  latestItems,
+  earlierItems,
 }: {
-  id?: string;
-  title: string;
-  items: TimelineItem[];
+  latestItems: TimelineItem[];
+  earlierItems: TimelineItem[];
 }) {
   return (
-    <section id={id} aria-labelledby={`${title.toLowerCase()}-heading`}>
-      <SectionHeading title={title} />
-      <div>
-        {items.map((item) => (
-          <TimelineRow key={item.organization} item={item} />
-        ))}
+    <section id="work" aria-labelledby="work-heading">
+      <SectionHeading title="Work" />
+      <div className="space-y-10">
+        <TimelineGroup title="Latest" items={latestItems} />
+        <TimelineGroup title="Earlier" items={earlierItems} />
       </div>
     </section>
   );
 }
 
+function TimelineGroup({
+  title,
+  items,
+}: {
+  title: string;
+  items: TimelineItem[];
+}) {
+  return (
+    <div>
+      <h3 className="mb-3 text-[0.82rem] font-normal leading-4 text-subtle">
+        {title}
+      </h3>
+      <div>
+        {items.map((item) => (
+          <TimelineRow key={item.organization} item={item} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function TimelineRow({ item }: { item: TimelineItem }) {
+  const isWordmark = item.logo.display === "wordmark";
+
   return (
     <article className="group -mx-2 rounded-[0.35rem] border-t border-line px-2 py-4 transition-colors hover:border-line-strong hover:bg-foreground/[0.025] focus-within:border-line-strong focus-within:bg-foreground/[0.025]">
-      <div className="grid grid-cols-[1.5rem_minmax(0,1fr)] gap-x-3 sm:grid-cols-[1.5rem_6.25rem_minmax(0,1fr)] sm:gap-x-5">
-        <span className="mt-[0.2rem] flex size-5 shrink-0 items-center justify-center">
+      <div className="grid gap-y-3 sm:grid-cols-[7.5rem_minmax(0,1fr)] sm:gap-x-4 sm:gap-y-0">
+        <h3 className="flex min-w-0 items-center gap-2 text-[0.95rem] font-medium leading-5 text-foreground">
           <Image
-            alt=""
-            aria-hidden="true"
-            className="size-5 object-contain"
-            height={20}
+            alt={isWordmark ? item.logo.alt : ""}
+            aria-hidden={isWordmark ? undefined : true}
+            className={
+              isWordmark
+                ? "h-[1.05rem] w-auto max-w-full object-contain"
+                : "size-5 shrink-0 object-contain"
+            }
+            height={item.logo.height ?? 20}
             src={item.logo.src}
             unoptimized
-            width={20}
+            width={item.logo.width ?? 20}
           />
-        </span>
-
-        <h3 className="text-[0.95rem] font-medium leading-5 text-foreground">
-          {item.organization}
+          {!isWordmark ? (
+            <span className="min-w-0 truncate">{item.organization}</span>
+          ) : null}
         </h3>
 
-        <div className="col-start-2 mt-2 space-y-1 sm:col-start-3 sm:mt-0">
+        <div className="space-y-1.5">
           {item.roles.map((role) => (
             <div
-              className="grid grid-cols-[minmax(0,1fr)_5rem] gap-x-3 sm:grid-cols-[minmax(0,1fr)_5.75rem] sm:gap-x-4"
+              className="grid grid-cols-[minmax(0,1fr)_5.35rem] gap-x-3 sm:grid-cols-[minmax(0,1fr)_7.05rem] sm:gap-x-5"
               key={`${role.title}-${role.period}`}
             >
               <p className="min-w-0 text-[0.95rem] leading-5 text-foreground">
@@ -107,8 +137,8 @@ function TimelineRow({ item }: { item: TimelineItem }) {
                   </span>
                 ) : null}
               </p>
-              <p className="text-right text-[0.95rem] leading-5 text-muted tabular-nums">
-                {role.period}
+              <p className="text-right text-[0.95rem] leading-5 text-muted tabular-nums sm:whitespace-nowrap">
+                {formatPeriod(role.period)}
               </p>
             </div>
           ))}
@@ -170,37 +200,8 @@ function SkillsSection({ rows }: { rows: SimpleRow[] }) {
   );
 }
 
-function MiscSection({ links }: { links: MiscLink[] }) {
-  return (
-    <section aria-labelledby="misc-heading">
-      <SectionHeading title="Misc" />
-      <div>
-        {links.map((link) => (
-          <a
-            className="group grid grid-cols-[4rem_minmax(0,1fr)_1rem] gap-x-4 border-t border-line py-4 transition-colors hover:border-line-strong"
-            href={link.href}
-            key={`${link.year}-${link.title}`}
-            rel="noreferrer"
-            target="_blank"
-          >
-            <span className="text-[0.95rem] leading-5 text-muted tabular-nums">
-              {link.year}
-            </span>
-            <span className="min-w-0 text-[0.95rem] leading-5 text-foreground">
-              {link.title}
-              <span className="ml-1 text-muted">{link.source}</span>
-            </span>
-            <span
-              className="text-right text-[0.95rem] leading-5 text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-foreground"
-              aria-hidden="true"
-            >
-              -&gt;
-            </span>
-          </a>
-        ))}
-      </div>
-    </section>
-  );
+function formatPeriod(period: string) {
+  return period.replaceAll(" ", "\u00A0").replaceAll("-", " - ");
 }
 
 function SectionHeading({ title }: { title: string }) {
@@ -211,32 +212,5 @@ function SectionHeading({ title }: { title: string }) {
     >
       {title}
     </h2>
-  );
-}
-
-function FooterDock({ links }: { links: Link[] }) {
-  return (
-    <nav
-      aria-label="Portfolio links"
-      className="pointer-events-none fixed inset-x-0 bottom-0 z-20"
-    >
-      <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-background via-background/95 to-transparent" />
-      <div className="relative mx-auto flex max-w-[42rem] items-center justify-between gap-2 px-8 pb-[calc(1.25rem+env(safe-area-inset-bottom))] pt-8 sm:px-16">
-        {links.map((link) => (
-          <a
-            aria-label={link.label}
-            className="pointer-events-auto flex h-8 min-w-8 items-center justify-center rounded-sm border border-transparent px-1.5 text-[0.72rem] font-medium leading-none text-muted transition-colors hover:border-line hover:bg-foreground/5 hover:text-foreground focus-visible:border-line-strong focus-visible:text-foreground"
-            href={link.href}
-            key={link.href}
-            rel={link.href.startsWith("http") ? "noreferrer" : undefined}
-            target={link.href.startsWith("http") ? "_blank" : undefined}
-            title={link.label}
-          >
-            {link.shortLabel}
-          </a>
-        ))}
-        <PortfolioChat />
-      </div>
-    </nav>
   );
 }
