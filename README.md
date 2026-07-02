@@ -24,7 +24,8 @@ npm run build
 ```
 
 Copy `.env.example` to `.env.local` and set `OPENAI_API_KEY` only when testing
-the optional portfolio agent locally.
+the optional portfolio agent locally. Set `CHAT_ENABLED=false` to keep the
+chat endpoint offline without removing the UI.
 
 ## Content
 
@@ -47,7 +48,19 @@ ignored local env file such as `.env.local`; without a key, the route returns a
 503 configuration response instead of calling the SDK.
 
 The homepage chat control in the bottom dock calls this route from
-`src/components/PortfolioChat.tsx`.
+`src/components/PortfolioChat.tsx`. The route validates JSON bodies, caps
+question length, rejects cross-site browser posts, applies a bounded
+per-instance rate limit, and caps model output tokens before calling the SDK.
+Use Vercel spend limits or a shared external rate-limit store if the public
+launch needs a hard account-wide request budget.
+
+## Deployment
+
+Absolute URLs in metadata, the sitemap, and robots derive from
+`NEXT_PUBLIC_SITE_URL` when set, then fall back to Vercel's
+`VERCEL_PROJECT_PRODUCTION_URL`, then `http://localhost:3000`. No extra
+configuration is needed on Vercel; attaching a custom domain updates the
+production URL automatically.
 
 Design rules live in `DESIGN.md`. Version acceptance gates and release notes
 live in `CHECKPOINTS.md`.

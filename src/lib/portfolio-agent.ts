@@ -10,6 +10,7 @@ import {
   profile,
   skillRows,
 } from "@/data/portfolio";
+import { MAX_AGENT_OUTPUT_TOKENS } from "@/lib/chat-limits";
 
 const sectionSchema = z
   .enum(["profile", "timeline", "impact", "skills", "links", "all"])
@@ -32,8 +33,13 @@ export function createPortfolioAgent() {
   return new Agent({
     name: "Miles Chu portfolio assistant",
     instructions:
-      "Answer questions about Miles Chu's public portfolio. Use portfolio_snapshot for factual grounding. Keep answers concise, specific, plain text, and limited to the public portfolio data.",
+      "Answer questions about Miles Chu's public portfolio. Use portfolio_snapshot before factual answers about his work, impact, skills, or links. Keep answers plain text, specific, and limited to public portfolio data. Prefer 2-4 concise sentences, lead with the most relevant fact, and offer a useful follow-up angle only when it helps the visitor choose what to read next.",
     model: "gpt-5.5",
+    modelSettings: {
+      maxTokens: MAX_AGENT_OUTPUT_TOKENS,
+      reasoning: { effort: "none" },
+      text: { verbosity: "low" },
+    },
     tools: [portfolioSnapshot],
   });
 }
@@ -48,6 +54,7 @@ export type PortfolioAgentRunner = (
 export type PortfolioAgentStreamRunner = (
   agent: PortfolioAgent,
   input: string,
+  signal?: AbortSignal,
 ) => Promise<AsyncIterable<string>>;
 
 export async function runPortfolioAgent(
@@ -69,10 +76,11 @@ export async function runPortfolioAgent(
 export async function runPortfolioAgentStream(
   question: string,
   runner: PortfolioAgentStreamRunner = runPortfolioAgentStreamWithSdk,
+  signal?: AbortSignal,
 ) {
   const normalizedQuestion = normalizeQuestion(question);
 
-  return runner(createPortfolioAgent(), normalizedQuestion);
+  return runner(createPortfolioAgent(), normalizedQuestion, signal);
 }
 
 function runPortfolioAgentWithSdk(agent: PortfolioAgent, input: string) {
@@ -84,9 +92,11 @@ function runPortfolioAgentWithSdk(agent: PortfolioAgent, input: string) {
 async function runPortfolioAgentStreamWithSdk(
   agent: PortfolioAgent,
   input: string,
+  signal?: AbortSignal,
 ) {
   const result = await run(agent, input, {
     maxTurns: 4,
+    signal,
     stream: true,
   });
 

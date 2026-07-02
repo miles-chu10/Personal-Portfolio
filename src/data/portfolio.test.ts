@@ -21,7 +21,7 @@ describe("portfolio content", () => {
 
   it("has enough rows for the Ambrosino-style sections", () => {
     assert.ok(latest.length >= 3);
-    assert.ok(earlier.length >= 3);
+    assert.ok(earlier.length >= 2);
     assert.ok(impactRows.length >= 4);
     assert.ok(skillRows.length >= 4);
     assert.ok(miscLinks.length >= 3);
@@ -47,12 +47,20 @@ describe("portfolio content", () => {
     }
   });
 
+  it("keeps misc links distinct", () => {
+    assert.equal(new Set(miscLinks.map((link) => link.href)).size, miscLinks.length);
+  });
+
   it("keeps footer links compact and resolvable", () => {
     assert.ok(footerLinks.length >= 4);
     assert.ok(footerLinks.every((link) => link.label && link.shortLabel));
     assert.ok(
       footerLinks.every(
-        (link) => link.href.startsWith("https://") || link.href.startsWith("#") || link.href.startsWith("mailto:"),
+        (link) =>
+          link.href.startsWith("https://") ||
+          link.href.startsWith("#") ||
+          link.href.startsWith("/") ||
+          link.href.startsWith("mailto:"),
       ),
     );
   });

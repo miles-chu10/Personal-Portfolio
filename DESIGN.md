@@ -65,7 +65,7 @@ Intentional divergences from the reference:
 | `--background` | `#080808` | Page surface and footer fade |
 | `--foreground` | `#f4f4f5` | Primary text and active links |
 | `--muted` | `#8a8a8f` | Section headings, dates, secondary copy |
-| `--subtle` | `#66666b` | Low-emphasis metadata |
+| `--subtle` | `#7a7a80` | Low-emphasis metadata (kept at or above 4.5:1 contrast on `--background`) |
 | `--line` | `#18181b` | Default row dividers |
 | `--line-strong` | `#27272a` | Hover row divider |
 | `--focus` | `#d4d4d8` | Keyboard focus outline |
@@ -121,7 +121,8 @@ Skills and misc sections follow the same row rhythm:
 The footer dock is a fixed `nav` with `aria-label="Portfolio links"`.
 
 - Keep links compact and icon-like through `shortLabel`; each link must still
-  have a descriptive `aria-label`.
+  expose the visible short label plus the descriptive full label in its
+  accessible name.
 - Keep the AI Chat control in the dock as an icon button using the local
   ChatGPT app icon; the chat panel opens above the dock and calls `/api/agent`.
 - Preserve the bottom gradient fade so content scrolls behind the dock without
@@ -137,7 +138,8 @@ The footer dock is a fixed `nav` with `aria-label="Portfolio links"`.
 
 All portfolio facts live in `src/data/portfolio.ts`.
 
-- `profile` drives the header and email link.
+- `profile` drives the header (name, title, and a one-line location/email
+  contact row) and the dock email link.
 - `latest` and `earlier` render timeline sections.
 - `impactRows` renders metric-led proof points.
 - `skillRows` renders the skills table.
@@ -153,6 +155,16 @@ secondary context in `detail` so mobile wrapping remains controlled.
 - Keep semantic regions: `main`, `header`, `section`, `article`, and `nav`.
 - Every section heading must be connected with `aria-labelledby`.
 - Link-only controls need either visible text or a clear `aria-label`.
+- The chat panel is a `role="dialog"` disclosure: opening moves focus to the
+  textarea, Escape closes it, and closing returns focus to the dock toggle.
+- Chat controls must remain focusable while a request is busy; use guarded
+  `aria-disabled` states instead of disabling the focused textarea or buttons.
+- The chat transcript must be keyboard-scrollable and streaming updates should
+  announce completion/errors through a separate screen-reader-only status
+  region, not token-by-token message list updates.
+- Timeline periods render with non-breaking internal spaces
+  (`formatPeriod` in `page.tsx`) so date ranges wrap only at the hyphen and
+  never overflow the fixed date column at 320px.
 - Preserve `focus-visible` outlines and reduced-motion handling.
 - Hover effects should be subtle: divider strengthening, text color change, or
   the misc arrow shifting by at most `0.125rem`.
@@ -167,14 +179,15 @@ Update this section after every meaningful visual or content-system change.
 
 | Check | Status | Notes |
 | --- | --- | --- |
-| `npm run lint` | Passed | ESLint completed without findings after the streaming chat and row rhythm update. |
-| `npm run typecheck` | Passed | `tsc --noEmit` completed successfully after adapting the Agents SDK stream to an async iterable. |
-| `npm test` | Passed | 14 tests passed across portfolio data, agent config, route validation, missing-key handling, and injectable stream behavior. |
-| `npm run build` | Passed | Next.js production build passed; sandbox run was blocked by Turbopack port binding, escalated run passed. |
-| Local HTTP preview | Passed | Dev server at `http://127.0.0.1:3010/` returned 200; ChatGPT brand asset returned 200; `/api/agent` streamed a live grounded answer with local `.env.local`. |
-| Browser desktop/mobile | Passed | Headless Chrome QA covered 1280x900, 390x844, and 320x780 with the chat panel open: no horizontal overflow, no footer/chat overlap, and brand images loaded. Screenshots saved in `/private/tmp/portfolio-*-chat-open.png`. |
-| Figma artifact | Partial | Created `Personal Portfolio Touch-Up QA` at `https://www.figma.com/design/GSK3DLtmt9S9IsFSvlHpam`; page capture was blocked by the Figma Starter MCP tool-call limit. |
-| Final review | Passed | Final diff reviewed for scope; pre-existing `AGENTS.md` and `claude-agent.prompt.md` were left untouched. |
+| `npm run lint` | Passed | ESLint completed without findings after the pre-launch hardening pass. |
+| `npm run typecheck` | Passed | `tsc --noEmit` completed successfully with the new SEO, rate-limit, and error-page modules. |
+| `npm test` | Passed | 28 tests passed across portfolio data, agent config/output caps, route validation (including JSON, length, origin, kill-switch, and rate-limit branches), missing-key handling, rate limiter, UTF-8 stream encoding/error logging, and injectable stream behavior. |
+| `npm run build` | Passed | Next.js production build passed; `/` prerenders static, and `apple-icon`, `opengraph-image`, `robots.txt`, and `sitemap.xml` all generate statically. |
+| Local HTTP preview | Passed | Production server at `http://localhost:3101/` returned 200 with security headers; robots, sitemap, manifest, OG image, apple icon, generated icon, and 404 all verified; `/api/agent` returned correct 400/403/503 responses for invalid JSON, JSON null, cross-site origin, and `CHAT_ENABLED=false`. |
+| Browser desktop/mobile | Passed | In-app Browser QA covered 1280x720, 390x844, and 320x780 with the chat panel open: no horizontal overflow, no footer/chat overlap, dates remain contained, no console errors or warnings. |
+| Chat dialog a11y | Passed | Opening the dock chat moves focus to the textarea; submit and clear preserve textarea focus; the transcript is keyboard-focusable; Escape closes the dialog and returns focus to the toggle button (verified in-browser). |
+| Head metadata | Passed | Rendered HTML verified to include title, description, canonical, full Open Graph and Twitter card tags with generated OG image, theme color, apple-touch-icon, and JSON-LD Person schema. |
+| Agent smoke test | Passed | The production build was verified with `CHAT_ENABLED=false` to avoid a live model call: the chat UI rendered visitor-friendly offline copy and preserved focus; `/manifest.webmanifest` and `/icon` verified. |
 
 ## Known Gaps
 
@@ -185,3 +198,5 @@ Update this section after every meaningful visual or content-system change.
   `npx -y magicpath-ai login` before making MagicPath authoritative.
 - Confirm `profile.email`, LinkedIn, GitHub, misc URLs, and any company
   references before publishing to a public domain.
+- Re-run a live `/api/agent` stream with the deployment `OPENAI_API_KEY` before
+  enabling public chat on the final domain.

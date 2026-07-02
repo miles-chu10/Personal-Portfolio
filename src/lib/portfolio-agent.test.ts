@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
+import { MAX_AGENT_OUTPUT_TOKENS } from "@/lib/chat-limits";
+
 import {
   createPortfolioAgent,
   runPortfolioAgent,
@@ -15,6 +17,9 @@ describe("portfolio agent", () => {
 
     assert.equal(agent.name, "Miles Chu portfolio assistant");
     assert.equal(agent.model, "gpt-5.5");
+    assert.equal(agent.modelSettings.maxTokens, MAX_AGENT_OUTPUT_TOKENS);
+    assert.deepEqual(agent.modelSettings.reasoning, { effort: "none" });
+    assert.deepEqual(agent.modelSettings.text, { verbosity: "low" });
     assert.ok(agent.instructions.toString().includes("public portfolio"));
     assert.equal(agent.tools.length, 1);
     assert.equal(agent.tools[0]?.name, "portfolio_snapshot");

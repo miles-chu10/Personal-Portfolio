@@ -95,6 +95,58 @@ clear purpose, content source, validation gates, and known risks.
   `https://www.figma.com/design/GSK3DLtmt9S9IsFSvlHpam`; capture/import was
   blocked by the Figma Starter MCP tool-call limit.
 
+## v0.5 - Pre-Launch Hardening, SEO, and Accessibility
+
+- Purpose: close the launch blockers surfaced by design reviews before buying
+  the production domain: API abuse protection, chat dialog accessibility,
+  contrast, mobile date overflow, duplicate IBM entry, and missing SEO
+  surface.
+- Source: current repo implementation, prior sub-agent design reviews, and
+  the resume-grounded content shipped in the 2026-07-01 publish session.
+- Changes:
+  - Harden `POST /api/agent`: reject non-JSON bodies (400), cap question
+    length via `MAX_QUESTION_LENGTH` (500), reject cross-site browser posts
+    (403), support `CHAT_ENABLED=false`, rate limit per client IP with a
+    bounded in-memory sliding window (429, `src/lib/rate-limit.ts`), cap agent
+    output with `MAX_AGENT_OUTPUT_TOKENS`, and export `maxDuration`.
+  - Make the chat panel a keyboard-accessible `role="dialog"`: focus moves to
+    the textarea on open, Escape closes, focus returns to the dock toggle,
+    and 503/429 responses render visitor-friendly fallback copy.
+  - Raise `--subtle` to `#7a7a80` for 4.5:1 contrast on the page background.
+  - Wrap timeline periods with non-breaking spaces so date ranges break only
+    at the hyphen inside the fixed date column at 320px.
+  - Merge the duplicated IBM entry into a single `Latest` item with three
+    roles; `Earlier` now holds Esri and UC Riverside.
+  - Add a header contact line (location plus email) under the title.
+  - Add launch SEO surface: `metadataBase` derived from
+    `NEXT_PUBLIC_SITE_URL` or `VERCEL_PROJECT_PRODUCTION_URL`, canonical,
+    Open Graph and Twitter cards, generated OG image and apple icon,
+    `robots.txt`, `sitemap.xml`, JSON-LD Person schema, and theme color.
+  - Add security headers in `next.config.ts` plus on-brand `error.tsx` and
+    `not-found.tsx` pages.
+  - Pass the request `AbortSignal` through to the Agents SDK run so a closed
+    tab stops token generation; log non-abort mid-stream failures from
+    `src/lib/text-stream.ts` (previously silent).
+  - Replace 190KB/155KB 512px brand PNGs with 6KB/5KB 64px versions
+    (rendered at 20px and below).
+  - Add `manifest.ts` plus a generated 512px `icon.tsx`; move streaming
+    announcements to a screen-reader-only `role="status"` element instead of
+    a token-by-token `aria-live` message list.
+  - Keep chat controls focusable while busy, restore focus after submit/retry/
+    clear, make the transcript scroll area keyboard-focusable, preserve partial
+    streamed answers on interruption, and keep the chat toggle in the footer
+    dock flow.
+  - Add a GitHub Actions CI workflow running lint, typecheck, tests, and
+    build.
+- Validation: `npm run lint`, `npm run typecheck`, `npm test` (28 tests),
+  `npm run build`; endpoint checks for headers, robots, sitemap, OG image,
+  404, API validation branches, cross-site rejection, and `CHAT_ENABLED=false`;
+  in-app Browser QA at 1280x720, 390x844, and 320x780 with the chat panel open
+  (no horizontal overflow, no console errors); dialog submit/clear/Escape focus
+  verification against the offline endpoint.
+- Result: complete locally on branch `touch-ups`; deploy to the existing
+  Vercel project after commit to refresh the live preview.
+
 ## v1.0 - Public Launch Candidate
 
 - Purpose: publish a durable first public version.
@@ -103,6 +155,8 @@ clear purpose, content source, validation gates, and known risks.
   - Configure `OPENAI_API_KEY` in the deployment environment if the AI chat
     should be enabled publicly; otherwise the endpoint returns a 503
     configuration response.
+  - Configure Vercel/OpenAI spend controls or a shared external limiter before
+    treating chat rate limits as a hard account-wide budget.
   - Replace generic GitHub links with live repo/project links once available.
   - Add a downloadable public resume only if it is intentionally sanitized.
   - Re-run all validation gates and update this file with the launch commit.

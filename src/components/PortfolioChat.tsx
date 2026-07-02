@@ -3,6 +3,11 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
+import { ChatBubbleIcon } from "@/components/DockIcons";
+import { DockTooltip } from "@/components/DockTooltip";
+import { MAX_QUESTION_LENGTH } from "@/lib/chat-limits";
+import { cn } from "@/lib/utils";
+
 type ChatMessage = {
   id: string;
   role: "assistant" | "user";
@@ -20,7 +25,8 @@ const initialMessages: ChatMessage[] = [
   {
     id: "intro",
     role: "assistant",
-    content: "Ask about Miles's GTM work, RevOps impact, AI systems, or links.",
+    content:
+      "Hi, I'm Miles's portfolio agent. Ask for a quick read on his GTM work, RevOps impact, AI systems, or the best links to explore.",
   },
 ];
 
@@ -30,8 +36,11 @@ export function PortfolioChat() {
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [status, setStatus] = useState<ChatStatus>("idle");
   const [lastQuestion, setLastQuestion] = useState("");
+  const [announcement, setAnnouncement] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const isBusy = status !== "idle";
   const canSubmit = input.trim().length > 0 && !isBusy;
@@ -39,8 +48,35 @@ export function PortfolioChat() {
   const hasConversation = messages.length > initialMessages.length;
 
   useEffect(() => {
-    scrollRef.current?.scrollIntoView({ block: "end" });
-  }, [messages, status]);
+    if (isOpen) {
+      scrollRef.current?.scrollIntoView({ block: "end" });
+    }
+  }, [isOpen, messages, status]);
+
+  useEffect(() => {
+    if (isOpen) {
+      textareaRef.current?.focus();
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setIsOpen(false);
+        toggleRef.current?.focus();
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen]);
 
   async function handleSubmit(event: { preventDefault: () => void }) {
     event.preventDefault();
@@ -74,6 +110,7 @@ export function PortfolioChat() {
     setInput("");
     setLastQuestion(question);
     setStatus("submitted");
+    setAnnouncement("");
 
     try {
       const response = await fetch("/api/agent", {
@@ -87,6 +124,7 @@ export function PortfolioChat() {
       if (!response.ok) {
         const errorMessage = await readErrorMessage(response);
         updateAssistantMessage(assistantId, errorMessage, "error");
+        setAnnouncement(errorMessage);
         return;
       }
 
@@ -96,18 +134,20 @@ export function PortfolioChat() {
           "Portfolio agent returned an empty response.",
           "error",
         );
+        setAnnouncement("Portfolio agent returned an empty response.");
         return;
       }
 
       setStatus("streaming");
       await streamAssistantMessage(response.body, assistantId);
-    } catch (error) {
+    } catch {
       const message =
-        error instanceof Error ? error.message : "Portfolio agent failed.";
-
+        "The portfolio agent lost its connection. Try again in a moment.";
       updateAssistantMessage(assistantId, message, "error");
+      setAnnouncement(message);
     } finally {
       setStatus("idle");
+      focusTextareaSoon();
     }
   }
 
@@ -139,10 +179,23 @@ export function PortfolioChat() {
           "Portfolio agent returned an empty response.",
           "error",
         );
+        setAnnouncement("Portfolio agent returned an empty response.");
         return;
       }
 
       updateAssistantMessage(assistantId, answer.trim());
+      setAnnouncement("Answer ready.");
+    } catch {
+      const message = answer.trim()
+        ? `${answer.trim()}\n\nThe connection stopped before the answer finished. Retry for a complete response.`
+        : "The connection dropped before the agent could answer. Try again.";
+
+      updateAssistantMessage(assistantId, message, "error");
+      setAnnouncement(
+        answer.trim()
+          ? "Answer interrupted. Retry for a complete response."
+          : "The connection dropped before the agent could answer.",
+      );
     } finally {
       reader.releaseLock();
     }
@@ -170,6 +223,19 @@ export function PortfolioChat() {
     setMessages(initialMessages);
     setInput("");
     setLastQuestion("");
+    setAnnouncement("Chat cleared.");
+    focusTextareaSoon();
+  }
+
+  function closeChat() {
+    setIsOpen(false);
+    toggleRef.current?.focus();
+  }
+
+  function focusTextareaSoon() {
+    requestAnimationFrame(() => {
+      textareaRef.current?.focus();
+    });
   }
 
   return (
@@ -177,7 +243,8 @@ export function PortfolioChat() {
       {isOpen ? (
         <section
           aria-label="Portfolio agent chat"
-          className="fixed inset-x-3 bottom-[calc(5.75rem+env(safe-area-inset-bottom))] z-30 mx-auto flex max-h-[min(34rem,calc(100vh-7.5rem))] max-w-[23rem] flex-col overflow-hidden rounded-[0.45rem] border border-line-strong bg-background/96 shadow-2xl shadow-black/45 backdrop-blur sm:left-auto sm:right-[max(1rem,calc((100vw-42rem)/2+1rem))] sm:mx-0 sm:w-[23rem]"
+          className="fixed inset-x-3 bottom-[calc(5.75rem+env(safe-area-inset-bottom))] z-30 mx-auto flex max-h-[min(34rem,calc(100vh-7.5rem))] max-w-[23rem] flex-col overflow-hidden rounded-[0.45rem] border border-line-strong bg-background/96 shadow-2xl shadow-black/45 backdrop-blur sm:left-auto sm:right-[max(1rem,calc((100vw-42rem)/2+4rem))] sm:mx-0 sm:w-[23rem]"
+          role="dialog"
         >
           <div className="flex items-center justify-between gap-3 border-b border-line px-3 py-2.5">
             <div className="flex min-w-0 items-center gap-2.5">
@@ -187,7 +254,7 @@ export function PortfolioChat() {
                   aria-hidden="true"
                   className="size-5 object-contain"
                   height={20}
-                  src="/img/brand/chatgpt-512.png"
+                  src="/img/brand/chatgpt-64.png"
                   unoptimized
                   width={20}
                 />
@@ -197,7 +264,7 @@ export function PortfolioChat() {
                     aria-hidden="true"
                     className="size-3 object-contain"
                     height={12}
-                    src="/img/brand/codex-512.png"
+                    src="/img/brand/codex-64.png"
                     unoptimized
                     width={12}
                   />
@@ -216,21 +283,35 @@ export function PortfolioChat() {
             <div className="flex shrink-0 items-center gap-1">
               <button
                 aria-label="Retry last question"
-                className="flex size-8 items-center justify-center rounded-sm text-muted transition-colors hover:bg-foreground/5 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-35"
-                disabled={!canRetry}
+                aria-disabled={!canRetry}
+                className={[
+                  "flex size-8 items-center justify-center rounded-sm text-muted transition-colors hover:bg-foreground/5 hover:text-foreground",
+                  !canRetry ? "cursor-not-allowed opacity-35" : "",
+                ].join(" ")}
                 title="Retry"
                 type="button"
-                onClick={() => submitQuestion(lastQuestion)}
+                onClick={() => {
+                  if (canRetry) {
+                    void submitQuestion(lastQuestion);
+                  }
+                }}
               >
                 <RetryIcon />
               </button>
               <button
                 aria-label="Clear chat"
-                className="flex size-8 items-center justify-center rounded-sm text-muted transition-colors hover:bg-foreground/5 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-35"
-                disabled={!hasConversation || isBusy}
+                aria-disabled={!hasConversation || isBusy}
+                className={[
+                  "flex size-8 items-center justify-center rounded-sm text-muted transition-colors hover:bg-foreground/5 hover:text-foreground",
+                  !hasConversation || isBusy ? "cursor-not-allowed opacity-35" : "",
+                ].join(" ")}
                 title="Clear"
                 type="button"
-                onClick={clearConversation}
+                onClick={() => {
+                  if (hasConversation && !isBusy) {
+                    clearConversation();
+                  }
+                }}
               >
                 <ClearIcon />
               </button>
@@ -239,7 +320,7 @@ export function PortfolioChat() {
                 className="flex size-8 items-center justify-center rounded-sm text-muted transition-colors hover:bg-foreground/5 hover:text-foreground"
                 title="Close"
                 type="button"
-                onClick={() => setIsOpen(false)}
+                onClick={closeChat}
               >
                 <CloseIcon />
               </button>
@@ -247,8 +328,9 @@ export function PortfolioChat() {
           </div>
 
           <div
-            aria-live="polite"
+            aria-label="Chat messages"
             className="flex-1 space-y-3 overflow-y-auto px-3 py-3"
+            tabIndex={0}
           >
             {messages.map((message) => (
               <MessageBubble key={message.id} message={message} status={status} />
@@ -261,6 +343,10 @@ export function PortfolioChat() {
             <div ref={scrollRef} />
           </div>
 
+          <p className="sr-only" role="status">
+            {announcement}
+          </p>
+
           <form
             className="border-t border-line p-2"
             ref={formRef}
@@ -269,9 +355,12 @@ export function PortfolioChat() {
             <div className="flex items-end gap-2 rounded-[0.45rem] border border-line-strong bg-[#0d0d0f] p-2 transition-colors focus-within:border-foreground/35">
               <textarea
                 aria-label="Ask the portfolio agent"
+                aria-disabled={isBusy}
                 className="max-h-28 min-h-11 flex-1 resize-none bg-transparent text-[0.82rem] leading-5 text-foreground outline-none placeholder:text-subtle"
-                disabled={isBusy}
-                placeholder="Ask about impact, skills, or links"
+                maxLength={MAX_QUESTION_LENGTH}
+                placeholder="Ask about GTM impact, AI systems, or links"
+                readOnly={isBusy}
+                ref={textareaRef}
                 rows={2}
                 value={input}
                 onChange={(event) => setInput(event.target.value)}
@@ -288,8 +377,11 @@ export function PortfolioChat() {
               />
               <button
                 aria-label="Send question"
-                className="flex size-8 shrink-0 items-center justify-center rounded-sm bg-foreground text-background transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
-                disabled={!canSubmit}
+                aria-disabled={!canSubmit}
+                className={[
+                  "flex size-8 shrink-0 items-center justify-center rounded-sm bg-foreground text-background transition-opacity",
+                  !canSubmit ? "cursor-not-allowed opacity-40" : "",
+                ].join(" ")}
                 type="submit"
               >
                 <SendIcon />
@@ -301,21 +393,18 @@ export function PortfolioChat() {
 
       <button
         aria-expanded={isOpen}
-        aria-label="Open AI chat"
-        className="group flex h-8 min-w-8 items-center justify-center rounded-sm p-1.5 text-muted transition-colors hover:bg-foreground/5 hover:text-foreground focus-visible:text-foreground"
-        title="AI Chat"
+        aria-haspopup="dialog"
+        aria-label="Open OpenAI Agents SDK chat"
+        className={cn(
+          "group/action relative flex h-12 min-w-12 items-center justify-center rounded-[0.45rem] text-muted transition-colors hover:bg-foreground/10 hover:text-foreground focus-visible:bg-foreground/10 focus-visible:text-foreground",
+          isOpen ? "bg-foreground/10 text-foreground" : "",
+        )}
+        ref={toggleRef}
         type="button"
         onClick={() => setIsOpen((current) => !current)}
       >
-        <Image
-          alt=""
-          aria-hidden="true"
-          className="size-5 object-contain opacity-80 transition-opacity group-hover:opacity-100"
-          height={20}
-          src="/img/brand/chatgpt-512.png"
-          unoptimized
-          width={20}
-        />
+        <DockTooltip>OpenAI Agents SDK chat</DockTooltip>
+        <ChatBubbleIcon />
       </button>
     </div>
   );
@@ -356,6 +445,14 @@ function MessageBubble({
 }
 
 async function readErrorMessage(response: Response) {
+  if (response.status === 503) {
+    return "The portfolio agent is offline right now. Use the email link in the dock to reach Miles directly.";
+  }
+
+  if (response.status === 429) {
+    return "The agent is handling a lot of questions right now. Try again in a minute.";
+  }
+
   const data = (await response.json().catch(() => ({}))) as AgentErrorResponse;
 
   return data.error ?? "Portfolio agent failed.";
