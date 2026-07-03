@@ -1,17 +1,13 @@
 import type { Metadata, Viewport } from "next";
 
-import { footerLinks, profile } from "@/data/portfolio";
+import { profile, socialLinks } from "@/data/portfolio";
 import { getSiteUrl } from "@/lib/site";
 
 import "./globals.css";
-import { Geist } from "next/font/google";
-import { cn } from "@/lib/utils";
-
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const siteTitle = `${profile.name} | ${profile.title}`;
 const siteDescription =
-  "Personal portfolio for Miles Chu, covering growth strategy, revenue operations, AI workflow systems, and selected impact metrics.";
+  "Personal portfolio for Miles Chu, covering GTM strategy, revenue operations, Salesforce systems, forecasting, and AI workflow systems, with selected impact metrics.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
@@ -55,9 +51,23 @@ const personSchema = {
     addressLocality: profile.location,
   },
   url: getSiteUrl(),
-  sameAs: footerLinks
+  sameAs: socialLinks
     .filter((link) => link.href.startsWith("https://"))
     .map((link) => link.href),
+  alumniOf: {
+    "@type": "CollegeOrUniversity",
+    name: "University of California, Riverside",
+  },
+  knowsAbout: [
+    "GTM Strategy",
+    "Revenue Operations",
+    "Sales Strategy and Operations",
+    "Salesforce",
+    "Pipeline Analytics",
+    "Forecasting",
+    "SQL",
+    "AI Workflow Automation",
+  ],
 };
 
 export default function RootLayout({
@@ -66,7 +76,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("font-sans", geist.variable)}>
+    <html lang="en" className="font-sans">
       <body>
         {children}
         <script

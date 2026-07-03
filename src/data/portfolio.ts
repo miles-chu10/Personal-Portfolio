@@ -88,7 +88,7 @@ export const latest: TimelineItem[] = [
     roles: [
       {
         title: "Member of GTM Staff",
-        detail: "executive pipeline reporting, RevOps intake, SFDC PoC systems",
+        detail: "executive pipeline reporting, RevOps intake, Statsig GTM readiness",
         period: "Oct '25-Feb '26",
       },
       {
@@ -186,37 +186,49 @@ export const impactRows: ImpactRow[] = [
     metric: "$250M+",
     label: "OpenAI pipeline decisions",
     detail:
-      "Owned coverage, hygiene, and risk metrics for Head of RevOps and CRO cadence.",
+      "Owned weekly coverage, hygiene, and risk views for RevOps and CRO leadership with standardized Salesforce stage logic.",
   },
   {
     metric: "45-50%",
     label: "Faster RevOps intake",
     detail:
-      "Automated request triage across Google Sheets, Apps Script, and Slack workflows.",
+      "Built AI-native request triage across Google Sheets, Apps Script, Slack routing, and human-in-the-loop review.",
   },
   {
     metric: "30%",
     label: "Salesforce efficiency lift",
     detail:
-      "Automated Proof-of-Concept lifecycle work with SFDC status logic and schema-powered tooling.",
+      "Automated Proof-of-Concept lifecycle management with status-change logic and Custom GPT schema-powered tooling.",
   },
   {
     metric: "$150M+",
     label: "Docusign territory decisions",
     detail:
-      "Reduced reporting cycle time and redesigned SQL-driven forecasting models for GTM leaders.",
+      "Cut reporting cycle time by 40% with redesigned SQL-driven forecasting models and streamlined executive reporting.",
+  },
+  {
+    metric: "$1.5B+",
+    label: "Global pipeline framework",
+    detail:
+      "Improved forecast accuracy by 18% and opportunity quality by 25% with a dynamic deal valuation and benchmark framework.",
   },
   {
     metric: "$2.3M+",
     label: "IBM incremental revenue",
     detail:
-      "Designed account strategies and standardized GTM playbooks across 3 segments.",
+      "Designed account strategies and standardized GTM playbooks across 3 market segments, lifting conversion 2%.",
+  },
+  {
+    metric: "220+",
+    label: "AI workflow users",
+    detail:
+      "Partnered with engineering and client executives on user journeys, governance KPIs, and Agile feature iterations.",
   },
   {
     metric: "800+",
     label: "Hours removed annually",
     detail:
-      "Built SQL-driven KPI tracking and reporting automation while scaling AI workflows to 220+ users.",
+      "Built a SQL-driven KPI tracker and dashboard workflow that automated sales leadership reporting.",
   },
 ];
 
@@ -249,7 +261,7 @@ export const skillRows: SimpleRow[] = [
   {
     label: "Certs",
     value:
-      "Salesforce Admin, Marketing Cloud Admin, Business Analyst, Associate, AI Associate",
+      "Salesforce Administrator, Marketing Cloud Administrator, Business Analyst, Associate, AI Associate",
     meta: "SFDC",
   },
   {

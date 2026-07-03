@@ -7,8 +7,10 @@ clear purpose, content source, validation gates, and known risks.
 
 - Keep portfolio facts in `src/data/portfolio.ts`.
 - Keep design and interaction rules in `DESIGN.md`.
-- Do not publish private resume docs, phone numbers, secrets, `.env.local`, or
-  generated build output.
+- Do not publish secrets, `.env.local`, private working docs, or generated
+  build output. Exception by owner decision (2026-07-03): the public resume
+  PDF intentionally includes Miles's phone number for direct recruiter
+  contact.
 - Run the full local gate before publishing: `npm run lint`,
   `npm run typecheck`, `npm test`, `npm run build`, and Browser QA at desktop
   plus 390px and 320px mobile widths.
@@ -146,6 +148,34 @@ clear purpose, content source, validation gates, and known risks.
   verification against the offline endpoint.
 - Result: complete locally on branch `touch-ups`; deploy to the existing
   Vercel project after commit to refresh the live preview.
+
+## v0.6 - Post-Merge Review Fixes and Resume Alignment
+
+- Purpose: close the PR #1 automated review findings that landed at/after the
+  merge and align public content with the current resume before the domain
+  purchase.
+- Source: PR #1 Copilot and Codex review comments, resume PDF recovered from
+  git history, prior checkpoint rules.
+- Changes:
+  - Keep the public resume PDF and its dock download link: Miles reviewed the
+    P1 review finding about the embedded phone number and chose to publish
+    the resume as-is for direct recruiter contact (rule exception above).
+  - Point the JSON-LD Person `sameAs` at `socialLinks` (LinkedIn, GitHub) and
+    add `alumniOf` plus a curated `knowsAbout` list.
+  - Remove the unused Geist font wiring (system sans stack per DESIGN.md) and
+    the spurious Expo `app.json`.
+  - Rewrite Impact rows in Google XYZ form with resume-exact metrics; add
+    `$1.5B+` global pipeline framework and `220+` AI workflow users rows
+    (8 rows total).
+  - Align ATS keywords: meta description says "GTM strategy", certifications
+    spelled in full, and Statsig GTM readiness plus human-in-the-loop review
+    now appear in crawlable text.
+- Validation: `npm run lint`, `npm run typecheck`, `npm test` (28 tests),
+  `npm run build`; browser QA at 1280x800, 390x844, and 320x780 with no
+  horizontal overflow and no console errors; logo render, JSON-LD contents,
+  and chat dialog open/Escape/focus-return verified in the browser.
+- Result: merged to main from `claude/zen-jang-1425cc`; the production
+  redeploy refreshes the live site ahead of the domain purchase.
 
 ## v1.0 - Public Launch Candidate
 
