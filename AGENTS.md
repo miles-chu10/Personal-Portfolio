@@ -30,3 +30,5 @@ Existing history uses short, imperative, sentence-style subjects such as `Prepar
 ## Security & Configuration
 
 Do not commit secrets, `.env.local`, analytics tokens, or generated build output. The agent route reads `OPENAI_API_KEY` from the server environment; copy `.env.example` to `.env.local` and set the key only when testing the portfolio agent locally. Without a key, `POST /api/agent` intentionally returns a `503` configuration response instead of calling the SDK (covered by `route.test.ts`).
+
+Before changing OpenAI Agents SDK, OpenAI API, model, or streaming behavior, use the OpenAI Developers docs surfaces and match the current SDK/API signatures. Before changing Vercel deployment, environment-variable, or Next.js hosting behavior, use the Vercel docs/plugin surfaces and confirm the local Vercel CLI is current.
