@@ -115,12 +115,15 @@ function TimelineRow({ item }: { item: TimelineItem }) {
         </h3>
 
         <div className="space-y-1.5">
-          {item.roles.map((role) => (
+          {item.roles.map((role, index) => (
             <div
               className="grid grid-cols-[minmax(0,1fr)_5.35rem] gap-x-3 sm:grid-cols-[minmax(0,1fr)_7.05rem] sm:gap-x-5"
               key={`${role.title}-${role.period}`}
             >
               <p className="min-w-0 text-[0.95rem] leading-5 text-foreground">
+                <span aria-hidden="true" className="mr-1.5 text-muted">
+                  •
+                </span>
                 {role.href ? (
                   <a
                     className="underline decoration-foreground/40 transition-colors hover:text-foreground hover:decoration-foreground"
@@ -137,9 +140,11 @@ function TimelineRow({ item }: { item: TimelineItem }) {
                   </span>
                 ) : null}
               </p>
-              <p className="text-right text-[0.95rem] leading-5 text-muted tabular-nums sm:whitespace-nowrap">
-                {formatPeriod(role.period)}
-              </p>
+              {index === 0 ? (
+                <p className="text-right text-[0.95rem] leading-5 text-muted tabular-nums sm:whitespace-nowrap">
+                  {formatPeriod(role.period)}
+                </p>
+              ) : null}
             </div>
           ))}
         </div>
