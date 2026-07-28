@@ -89,12 +89,12 @@ export const latest: TimelineItem[] = [
       {
         title: "Member of GTM Staff",
         detail: "executive pipeline reporting, RevOps intake, Statsig GTM readiness",
-        period: "Oct '25-Feb '26",
+        period: "Oct '25-May '26",
       },
       {
         title: "AI-assisted operating workflows",
         detail: "Google Apps Script, Slack routing, Custom GPT workflows",
-        period: "Oct '25-Feb '26",
+        period: "Oct '25-May '26",
       },
     ],
   },
