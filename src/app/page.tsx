@@ -140,7 +140,7 @@ function TimelineRow({ item }: { item: TimelineItem }) {
                   </span>
                 ) : null}
               </p>
-              {index === 0 ? (
+              {index === 0 || role.period !== item.roles[index - 1].period ? (
                 <p className="text-right text-[0.95rem] leading-5 text-muted tabular-nums sm:whitespace-nowrap">
                   {formatPeriod(role.period)}
                 </p>
