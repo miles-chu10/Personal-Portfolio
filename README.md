@@ -61,11 +61,14 @@ launch needs a hard account-wide request budget.
 
 ## Deployment
 
-Absolute URLs in metadata, the sitemap, and robots derive from
-`NEXT_PUBLIC_SITE_URL` when set, then fall back to Vercel's
-`VERCEL_PROJECT_PRODUCTION_URL`, then `http://localhost:3000`. No extra
-configuration is needed on Vercel; attaching a custom domain updates the
-production URL automatically.
+Absolute URLs in metadata, the sitemap, robots, and JSON-LD are computed at
+build time by `src/lib/site.ts`: `NEXT_PUBLIC_SITE_URL` when set, then Vercel's
+`VERCEL_PROJECT_PRODUCTION_URL`, then `http://localhost:3000`. Set
+`NEXT_PUBLIC_SITE_URL=https://milesdchu.com` in the Vercel Production
+environment and redeploy after changing it or the domain, because the values
+are baked into the build. After each production deploy run
+`npm run smoke:live` (it defaults to `https://milesdchu.com`; pass another
+origin as the first argument).
 
 Design rules live in `DESIGN.md`. Version acceptance gates and release notes
 live in `CHECKPOINTS.md`.
