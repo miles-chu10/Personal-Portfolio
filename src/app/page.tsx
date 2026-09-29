@@ -14,6 +14,7 @@ import {
   type SimpleRow,
   type TimelineItem,
 } from "@/data/portfolio";
+import { formatPeriod } from "@/lib/format-period";
 
 export default function Home() {
   return (
@@ -117,9 +118,7 @@ function TimelineRow({ item }: { item: TimelineItem }) {
         <div className="space-y-1.5">
           {item.roles.map((role, roleIndex) => {
             const showPeriod =
-              item.roles.findIndex(
-                (candidate) => candidate.period === role.period,
-              ) === roleIndex;
+              roleIndex === 0 || role.period !== item.roles[roleIndex - 1].period;
 
             return (
               <div
@@ -127,6 +126,9 @@ function TimelineRow({ item }: { item: TimelineItem }) {
                 key={`${role.title}-${role.period}`}
               >
                 <p className="min-w-0 text-[0.95rem] leading-5 text-foreground">
+                  <span aria-hidden="true" className="mr-1.5 text-muted">
+                    •
+                  </span>
                   {role.href ? (
                     <a
                       className="underline decoration-foreground/40 transition-colors hover:text-foreground hover:decoration-foreground"
@@ -211,10 +213,6 @@ function SkillsSection({ rows }: { rows: SimpleRow[] }) {
       </div>
     </section>
   );
-}
-
-function formatPeriod(period: string) {
-  return period.replaceAll(" ", "\u00A0").replaceAll("-", " - ");
 }
 
 function SectionHeading({ title }: { title: string }) {

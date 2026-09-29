@@ -107,6 +107,10 @@ Timeline rows use a two-stage grid:
   pair intentionally stacks into one column so long titles and periods never
   compete for horizontal space; dates align to the left beneath their role.
   Dates use tabular numerals for steadier scanning.
+- Each role line starts with a decorative `•` (`aria-hidden`). A role's
+  period is shown only when it differs from the previous role's period in
+  the same organization; otherwise it stays in the accessibility tree as
+  `sr-only` text.
 - Rows have `border-t` dividers, `1rem` vertical padding, and subtle
   hover/focus backgrounds without changing row dimensions.
 
@@ -170,7 +174,7 @@ secondary context in `detail` so mobile wrapping remains controlled.
   (`formatPeriod` in `page.tsx`) so date ranges wrap only at the hyphen when a
   fixed date column is present. Below 360px, the date column stacks beneath
   each role; duplicate periods remain in the accessibility tree as `sr-only`
-  text even when the visual date is shown only once per organization.
+  text even when the visual date is omitted because it repeats the previous role's period.
 - Preserve `focus-visible` outlines and reduced-motion handling.
 - Hover effects should be subtle: divider strengthening, text color change, or
   the misc arrow shifting by at most `0.125rem`.
@@ -185,10 +189,10 @@ Update this section after every meaningful visual or content-system change.
 
 | Check | Status | Notes |
 | --- | --- | --- |
-| `npm run lint` | Passed | 2026-08-18: ESLint completed without findings after the UI, test, and verification-skill updates. |
-| `npm run typecheck` | Passed | 2026-08-18: `tsc --noEmit` completed successfully with the static-render test. |
-| `npm test` | Passed | 2026-08-18: the full Node test suite passed, including SSR assertions for the PDF/GitHub controls, accessible names, and repeated-period rendering. |
-| `npm run build` | Passed | 2026-08-18: the default Turbopack production build passed. Local development intentionally uses webpack because Turbopack dev panics while resolving Next.js in this checkout; both paths are required verification. |
+| `npm run lint` | Passed | 2026-09-29: ESLint completed without findings after the UI, test, and verification-skill updates. |
+| `npm run typecheck` | Passed | 2026-09-29: `tsc --noEmit` completed successfully with the static-render test. |
+| `npm test` | Passed | 2026-09-29: the full Node test suite passed (31 tests), including SSR assertions for the PDF/GitHub controls, accessible names, and repeated-period rendering. |
+| `npm run build` | Passed | 2026-09-29: the default Turbopack production build passed. Local development intentionally uses webpack because Turbopack dev panics while resolving Next.js in this checkout; both paths are required verification. |
 | Static render checks | Passed | 2026-08-18: `src/app/page.test.ts` rendered the homepage to static markup and verified named PDF/GitHub controls plus a retained `sr-only` period for duplicate roles. |
 | Local HTTP preview | Passed | 2026-08-18: webpack development and the built production server both returned the homepage at loopback. Turbopack dev was rejected after a reproducible package-resolution panic; production Turbopack remains green. |
 | Browser desktop/mobile | Passed | 2026-08-18: Chrome QA at 1280×720 and 390×844 found no horizontal overflow; every repeated role retained an `sr-only` period, and the fixed dock cleared the final Skills row at the bottom scroll position. |

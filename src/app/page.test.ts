@@ -3,6 +3,9 @@ import { describe, it } from "node:test";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 
+import { earlier, latest } from "@/data/portfolio";
+import { formatPeriod } from "@/lib/format-period";
+
 import Home from "./page";
 
 function renderHome() {
@@ -31,14 +34,23 @@ describe("homepage static render", () => {
 
   it("keeps a period associated with every role when duplicate dates are hidden visually", () => {
     const markup = renderHome().replaceAll("&#x27;", "'");
-    const openAiPeriod = "Oct\u00a0'25 - Feb\u00a0'26";
-    const occurrences = markup.split(openAiPeriod).length - 1;
+    const roles = [...latest, ...earlier].flatMap((item) => item.roles);
+    const expected = new Map<string, number>();
 
-    assert.equal(occurrences, 2);
-    assert.match(markup, new RegExp(`<p class="sr-only">${openAiPeriod}</p>`));
-    assert.match(
-      markup,
-      new RegExp(`AI-assisted operating workflows[\\s\\S]*?${openAiPeriod}`),
-    );
+    for (const role of roles) {
+      const period = formatPeriod(role.period);
+      expected.set(period, (expected.get(period) ?? 0) + 1);
+    }
+
+    for (const [period, count] of expected) {
+      assert.equal(markup.split(period).length - 1, count, period);
+    }
+
+    const repeated = [...latest, ...earlier]
+      .flatMap((item) => item.roles.filter((role, index) => index > 0 && role.period === item.roles[index - 1].period))
+      .at(0);
+
+    assert.ok(repeated, "fixture: at least one organization repeats a period");
+    assert.match(markup, new RegExp(`<p class="sr-only">${formatPeriod(repeated.period)}</p>`));
   });
 });
