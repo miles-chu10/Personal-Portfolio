@@ -44,7 +44,7 @@ function FooterLink({ link }: { link: Link }) {
         target={link.href.startsWith("http") ? "_blank" : undefined}
       >
         <DockTooltip>{link.label}</DockTooltip>
-        <DockIcon kind={link.shortLabel === "PDF" ? "pdf" : "info"} />
+        <DockIcon kind={link.shortLabel === "PDF" ? "pdf" : "github"} />
         {link.shortLabel === "PDF" ? (
           <span className="text-[0.9rem] font-semibold leading-none text-current">
             PDF
@@ -56,6 +56,7 @@ function FooterLink({ link }: { link: Link }) {
 
   return (
     <a
+      aria-label={link.label}
       className="pointer-events-auto flex h-8 min-w-8 items-center justify-center rounded-sm border border-transparent px-2 text-[0.72rem] font-medium leading-none text-muted transition-colors hover:border-line hover:bg-foreground/5 hover:text-foreground focus-visible:border-line-strong focus-visible:text-foreground"
       download={link.download}
       href={link.href}
@@ -64,7 +65,6 @@ function FooterLink({ link }: { link: Link }) {
       title={link.label}
     >
       <span>{link.shortLabel}</span>
-      <span className="sr-only"> {link.label}</span>
     </a>
   );
 }

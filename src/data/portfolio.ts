@@ -319,8 +319,8 @@ export const footerLinks: Link[] = [
     placement: "utility",
   },
   {
-    label: "Website info",
-    shortLabel: "Info",
+    label: "Source code",
+    shortLabel: "GitHub",
     href: "https://github.com/miles-chu10/Personal-Portfolio",
     placement: "utility",
   },

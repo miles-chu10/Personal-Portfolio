@@ -115,33 +115,46 @@ function TimelineRow({ item }: { item: TimelineItem }) {
         </h3>
 
         <div className="space-y-1.5">
-          {item.roles.map((role) => (
-            <div
-              className="grid grid-cols-[minmax(0,1fr)_5.35rem] gap-x-3 sm:grid-cols-[minmax(0,1fr)_7.05rem] sm:gap-x-5"
-              key={`${role.title}-${role.period}`}
-            >
-              <p className="min-w-0 text-[0.95rem] leading-5 text-foreground">
-                {role.href ? (
-                  <a
-                    className="underline decoration-foreground/40 transition-colors hover:text-foreground hover:decoration-foreground"
-                    href={role.href}
-                  >
-                    {role.title}
-                  </a>
-                ) : (
-                  role.title
-                )}
-                {role.detail ? (
-                  <span className="block text-muted sm:ml-1 sm:inline">
-                    {role.detail}
-                  </span>
-                ) : null}
-              </p>
-              <p className="text-right text-[0.95rem] leading-5 text-muted tabular-nums sm:whitespace-nowrap">
-                {formatPeriod(role.period)}
-              </p>
-            </div>
-          ))}
+          {item.roles.map((role, roleIndex) => {
+            const showPeriod =
+              item.roles.findIndex(
+                (candidate) => candidate.period === role.period,
+              ) === roleIndex;
+
+            return (
+              <div
+                className="grid grid-cols-1 gap-y-1 min-[360px]:grid-cols-[minmax(0,1fr)_5.35rem] min-[360px]:gap-x-3 min-[360px]:gap-y-0 sm:grid-cols-[minmax(0,1fr)_7.05rem] sm:gap-x-5"
+                key={`${role.title}-${role.period}`}
+              >
+                <p className="min-w-0 text-[0.95rem] leading-5 text-foreground">
+                  {role.href ? (
+                    <a
+                      className="underline decoration-foreground/40 transition-colors hover:text-foreground hover:decoration-foreground"
+                      href={role.href}
+                    >
+                      {role.title}
+                    </a>
+                  ) : (
+                    role.title
+                  )}
+                  {role.detail ? (
+                    <span className="block text-muted sm:ml-1 sm:inline">
+                      {role.detail}
+                    </span>
+                  ) : null}
+                </p>
+                <p
+                  className={
+                    showPeriod
+                      ? "text-left text-[0.95rem] leading-5 text-muted tabular-nums min-[360px]:text-right sm:whitespace-nowrap"
+                      : "sr-only"
+                  }
+                >
+                  {formatPeriod(role.period)}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </div>
     </article>
@@ -181,7 +194,7 @@ function SkillsSection({ rows }: { rows: SimpleRow[] }) {
       <div>
         {rows.map((row) => (
           <div
-            className="grid grid-cols-[minmax(0,1fr)_3.5rem] gap-x-3 gap-y-1 border-t border-line py-4 sm:grid-cols-[minmax(7rem,0.55fr)_minmax(0,1fr)_3.5rem] sm:gap-x-4 sm:gap-y-0"
+            className="grid grid-cols-[minmax(0,1fr)_3.5rem] gap-x-3 gap-y-1 border-t border-line py-4 sm:grid-cols-[8.5rem_minmax(0,1fr)_3.5rem] sm:gap-x-4 sm:gap-y-0"
             key={row.label}
           >
             <p className="col-start-1 row-start-1 min-w-0 text-[0.95rem] font-medium leading-5 text-foreground">

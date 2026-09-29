@@ -97,12 +97,16 @@ The page shell is a single centered column:
 
 Timeline rows use a two-stage grid:
 
-- Mobile: `1.5rem minmax(0, 1fr)` for logo and organization. Role/date pairs
-  begin in column two below the organization.
+- Mobile: one column with the logo/organization row above the role/date pairs.
+  At 360px and above, each role/date pair uses a two-column grid; below 360px,
+  the pair stacks as described below.
 - Desktop: `1.5rem 6.25rem minmax(0, 1fr)` so organization labels align in a
   fixed column and role/date content scans as a table.
-- Role rows use `minmax(0, 1fr)` plus a fixed date column of `5rem` mobile
-  and `5.75rem` desktop. Dates use tabular numerals for steadier scanning.
+- Role rows use `minmax(0, 1fr)` plus a fixed date column of `5rem` from 360px
+  through mobile and `5.75rem` desktop. At widths below 360px, each role/date
+  pair intentionally stacks into one column so long titles and periods never
+  compete for horizontal space; dates align to the left beneath their role.
+  Dates use tabular numerals for steadier scanning.
 - Rows have `border-t` dividers, `1rem` vertical padding, and subtle
   hover/focus backgrounds without changing row dimensions.
 
@@ -163,8 +167,10 @@ secondary context in `detail` so mobile wrapping remains controlled.
   announce completion/errors through a separate screen-reader-only status
   region, not token-by-token message list updates.
 - Timeline periods render with non-breaking internal spaces
-  (`formatPeriod` in `page.tsx`) so date ranges wrap only at the hyphen and
-  never overflow the fixed date column at 320px.
+  (`formatPeriod` in `page.tsx`) so date ranges wrap only at the hyphen when a
+  fixed date column is present. Below 360px, the date column stacks beneath
+  each role; duplicate periods remain in the accessibility tree as `sr-only`
+  text even when the visual date is shown only once per organization.
 - Preserve `focus-visible` outlines and reduced-motion handling.
 - Hover effects should be subtle: divider strengthening, text color change, or
   the misc arrow shifting by at most `0.125rem`.
@@ -179,15 +185,17 @@ Update this section after every meaningful visual or content-system change.
 
 | Check | Status | Notes |
 | --- | --- | --- |
-| `npm run lint` | Passed | ESLint completed without findings after the pre-launch hardening pass. |
-| `npm run typecheck` | Passed | `tsc --noEmit` completed successfully with the new SEO, rate-limit, and error-page modules. |
-| `npm test` | Passed | 28 tests passed across portfolio data, agent config/output caps, route validation (including JSON, length, origin, kill-switch, and rate-limit branches), missing-key handling, rate limiter, UTF-8 stream encoding/error logging, and injectable stream behavior. |
-| `npm run build` | Passed | Next.js production build passed; `/` prerenders static, and `apple-icon`, `opengraph-image`, `robots.txt`, and `sitemap.xml` all generate statically. |
-| Local HTTP preview | Passed | Production server at `http://localhost:3101/` returned 200 with security headers; robots, sitemap, manifest, OG image, apple icon, generated icon, and 404 all verified; `/api/agent` returned correct 400/403/503 responses for invalid JSON, JSON null, cross-site origin, and `CHAT_ENABLED=false`. |
-| Browser desktop/mobile | Passed | In-app Browser QA covered 1280x720, 390x844, and 320x780 with the chat panel open: no horizontal overflow, no footer/chat overlap, dates remain contained, no console errors or warnings. |
-| Chat dialog a11y | Passed | Opening the dock chat moves focus to the textarea; submit and clear preserve textarea focus; the transcript is keyboard-focusable; Escape closes the dialog and returns focus to the toggle button (verified in-browser). |
-| Head metadata | Passed | Rendered HTML verified to include title, description, canonical, full Open Graph and Twitter card tags with generated OG image, theme color, apple-touch-icon, and JSON-LD Person schema. |
-| Agent smoke test | Passed | The production build was verified with `CHAT_ENABLED=false` to avoid a live model call: the chat UI rendered visitor-friendly offline copy and preserved focus; `/manifest.webmanifest` and `/icon` verified. |
+| `npm run lint` | Passed | 2026-08-18: ESLint completed without findings after the UI, test, and verification-skill updates. |
+| `npm run typecheck` | Passed | 2026-08-18: `tsc --noEmit` completed successfully with the static-render test. |
+| `npm test` | Passed | 2026-08-18: the full Node test suite passed, including SSR assertions for the PDF/GitHub controls, accessible names, and repeated-period rendering. |
+| `npm run build` | Passed | 2026-08-18: the default Turbopack production build passed. Local development intentionally uses webpack because Turbopack dev panics while resolving Next.js in this checkout; both paths are required verification. |
+| Static render checks | Passed | 2026-08-18: `src/app/page.test.ts` rendered the homepage to static markup and verified named PDF/GitHub controls plus a retained `sr-only` period for duplicate roles. |
+| Local HTTP preview | Passed | 2026-08-18: webpack development and the built production server both returned the homepage at loopback. Turbopack dev was rejected after a reproducible package-resolution panic; production Turbopack remains green. |
+| Browser desktop/mobile | Passed | 2026-08-18: Chrome QA at 1280×720 and 390×844 found no horizontal overflow; every repeated role retained an `sr-only` period, and the fixed dock cleared the final Skills row at the bottom scroll position. |
+| Browser console | Partial | The external Chrome runner emitted `Access to storage is not allowed from this context` on both dev and production. The application source contains no `localStorage`, `sessionStorage`, or Storage API use; treat this as runner/extension noise pending a clean in-app-browser recheck. |
+| Chat dialog a11y | Not run | No browser control was available for a fresh focus/interaction pass; unchanged chat behavior is covered by the prior checkpoint evidence. |
+| Head metadata | Not rechecked | Metadata was not part of this pass; the prior rendered-HTML evidence remains recorded in the earlier checkpoint. |
+| Agent smoke test | Not run | This pass did not exercise the API or offline chat flow; the prior `CHAT_ENABLED=false` evidence remains recorded in the earlier checkpoint. |
 
 ## Known Gaps
 
