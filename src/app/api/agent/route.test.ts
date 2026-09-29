@@ -99,6 +99,31 @@ describe("portfolio agent route", () => {
     });
   });
 
+  it("uses the request host when the runtime normalizes the request URL", async () => {
+    const current = process.env.CHAT_ENABLED;
+    process.env.CHAT_ENABLED = "false";
+
+    try {
+      const response = await POST(
+        makeRequest(JSON.stringify({ question: "What does Miles do?" }), {
+          host: "127.0.0.1:3107",
+          origin: "http://127.0.0.1:3107",
+        }),
+      );
+
+      assert.equal(response.status, 503);
+      assert.deepEqual(await response.json(), {
+        error: "Portfolio agent is offline right now.",
+      });
+    } finally {
+      if (current === undefined) {
+        delete process.env.CHAT_ENABLED;
+      } else {
+        process.env.CHAT_ENABLED = current;
+      }
+    }
+  });
+
   it("can disable chat with the CHAT_ENABLED kill switch", async () => {
     const current = process.env.CHAT_ENABLED;
     process.env.CHAT_ENABLED = "false";
