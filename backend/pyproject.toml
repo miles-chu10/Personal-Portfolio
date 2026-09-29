@@ -1,0 +1,26 @@
+[project]
+name = "personal-portfolio-chatkit"
+version = "0.1.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "fastapi==0.142.0",
+  "openai-agents==0.22.3",
+  "openai-chatkit==1.6.5",
+  "psycopg[binary]==3.3.6",
+  "SQLAlchemy==2.1.1",
+  "uvicorn==0.54.0",
+]
+
+[build-system]
+requires = ["setuptools>=80"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = ["chatkit_merge", "main", "store"]
+packages = ["portfolio_chatkit"]
+
+[tool.setuptools.package-dir]
+portfolio_chatkit = "."
+
+[tool.setuptools.package-data]
+portfolio_chatkit = ["portfolio.json"]

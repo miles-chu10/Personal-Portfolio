@@ -1,0 +1,13 @@
+# Portfolio ChatKit backend
+
+This service implements the self-hosted ChatKit protocol at `POST /chatkit` with the official Python ChatKit and Agents SDKs. It reads only the public `portfolio.json` snapshot. The agent has one read-only tool for complete public sections and no web, action, upload, feedback, or client-tool capability. Missing public facts should be acknowledged instead of guessed.
+
+Python 3.12 is required. From this directory, install the exact tested environment with `uv venv --python 3.12 .venv && uv pip sync --python .venv/bin/python requirements.lock`. Vercel can install pinned direct dependencies from `requirements.txt`. Run the service locally with `.venv/bin/python -m uvicorn main:app --host 127.0.0.1 --port 8001` and run tests from the repository root with `backend/.venv/bin/python -m pytest -q backend/tests`.
+
+The private Next.js proxy must supply `Authorization: Bearer <CHATKIT_BACKEND_TOKEN>` and `x-portfolio-visitor: <UUID>`. Set `CHATKIT_BACKEND_TOKEN` to at least 32 characters. Set `OPENAI_API_KEY` and `DATABASE_URL`; PostgreSQL is required on Vercel. `postgres://` and `postgresql://` URLs are normalized to psycopg. Local development defaults to SQLite if `DATABASE_URL` is absent. `CHAT_ENABLED=false` disables the endpoint. `CHATKIT_GLOBAL_PER_MINUTE` defaults to 120; the per-visitor generating-request limit is eight per minute. All failures sent to the browser use generic messages.
+
+The SQL store enforces visitor ownership on reads and writes. Threads and messages expire after 24 hours and are physically pruned on authorized requests. At most ten active threads per visitor and eighty items per thread are stored. The protocol accepts only create, add message, get, list, items list, and delete. User input is limited to one text part of 500 characters; attachments are disabled. The endpoint streams SDK SSE events and cancels an active Agents run when its stream closes.
+
+`chatkit_merge.py` replaces only the stream-merging helper in the pinned `openai-chatkit==1.6.5`. That SDK helper leaves internal iterator tasks pending when an SSE consumer disconnects. The version guard requires a fresh review when updating ChatKit.
+
+For browser checks without API credit use `CHATKIT_BACKEND_TOKEN=<same proxy token> .venv/bin/python -m uvicorn tests.browser_fixture:app --host 127.0.0.1 --port 8001` from this directory. The fixture lives only under `tests/`, uses a separate SQLite database, and returns deterministic public-snapshot replies. It never calls OpenAI. Real model replies and Vercel/PostgreSQL deployment still need a separate live check after the project's API balance is restored.
