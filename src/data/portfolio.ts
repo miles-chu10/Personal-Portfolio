@@ -312,7 +312,7 @@ export const footerLinks: Link[] = [
     placement: "nav",
   },
   {
-    label: "Download resume",
+    label: "Download resume (PDF)",
     shortLabel: "PDF",
     href: "/Miles_Chu_Resume.pdf",
     download: "Miles_Chu_Resume.pdf",
