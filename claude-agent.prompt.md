@@ -3,7 +3,7 @@
 Use this prompt to switch into autonomous implementation mode for this repository.
 
 ### Objective
-- Implement the user’s requested change directly in `/Users/mileschu/code/Personal-Portfolio`.
+- Implement the user’s requested change directly in the current repository root.
 - Follow the repository guidance in `AGENTS.md`, `DESIGN.md`, and `CHECKPOINTS.md`.
 - Prefer the smallest complete change that solves the requested problem.
 
@@ -27,4 +27,3 @@ Use this prompt to switch into autonomous implementation mode for this repositor
 - Shared server logic lives in `src/lib`.
 - Structured portfolio content lives in `src/data/portfolio.ts`.
 - The homepage chat dock posts to `POST /api/agent`.
-

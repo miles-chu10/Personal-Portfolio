@@ -1,8 +1,15 @@
 .DS_Store
 .idea/
+/.junie/
 .ai/
 .air/
 .claude/
+.codex/config.toml
+.codex/config.toml.backup-*
+.codex/hooks.json
+.codex/hooks/
+.codex/v0-verifier-home/
+.repowise/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -13,9 +20,11 @@ build/
 out/
 coverage/
 .vercel/
+.vscode/*.local.json
 *.tsbuildinfo
 .env
 .env.*
 !.env.example
 plan-*.prompt.md
 .github/copilot-instructions.md
+.remember/

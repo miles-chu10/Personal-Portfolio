@@ -23,6 +23,11 @@ npm test
 npm run build
 ```
 
+Local development intentionally uses Next.js webpack because Turbopack dev
+currently panics while resolving the installed Next.js package in this
+checkout. Production still uses the default Turbopack build, so UI changes
+must pass both a live `npm run dev` check and `npm run build`.
+
 Copy `.env.example` to `.env.local` and set `OPENAI_API_KEY` only when testing
 the optional portfolio agent locally. Set `CHAT_ENABLED=false` to keep the
 chat endpoint offline without removing the UI.

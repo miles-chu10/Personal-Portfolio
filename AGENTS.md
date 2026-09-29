@@ -13,7 +13,7 @@ This repository is a Next.js (App Router, React 19) personal portfolio site styl
 - `npm run typecheck`: run TypeScript without emitting files.
 - `npm test`: run automated tests (`node --test --import tsx`).
 
-Run commands from `/Users/mileschu/code/Personal-Portfolio`, not the workspace root.
+Run commands from this repository root, not the workspace root.
 
 ## Coding Style & Naming Conventions
 
