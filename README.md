@@ -59,6 +59,13 @@ per-instance rate limit, and caps model output tokens before calling the SDK.
 Use Vercel spend limits or a shared external rate-limit store if the public
 launch needs a hard account-wide request budget.
 
+Failures that happen before the first token (for example exhausted OpenAI
+credits) return a JSON `503`, `429` or `500` so the chat panel can show its
+offline copy; only a failure after streaming has started breaks the stream.
+Set `CHAT_ENABLED` to `false`, `0`, `off` or `no` (any case) to take the chat
+offline. On Vercel a changed environment variable only applies to new
+deployments, so redeploy after changing it.
+
 ## Deployment
 
 Absolute URLs in metadata, the sitemap, robots, and JSON-LD are computed at

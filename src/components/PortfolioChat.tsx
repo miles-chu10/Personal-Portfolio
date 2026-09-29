@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { ChatBubbleIcon } from "@/components/DockIcons";
 import { DockTooltip } from "@/components/DockTooltip";
+import { readErrorMessage } from "@/lib/chat-errors";
 import { MAX_QUESTION_LENGTH } from "@/lib/chat-limits";
 import { cn } from "@/lib/utils";
 
@@ -16,10 +17,6 @@ type ChatMessage = {
 };
 
 type ChatStatus = "idle" | "submitted" | "streaming";
-
-type AgentErrorResponse = {
-  error?: string;
-};
 
 const initialMessages: ChatMessage[] = [
   {
@@ -442,20 +439,6 @@ function MessageBubble({
       </p>
     </div>
   );
-}
-
-async function readErrorMessage(response: Response) {
-  if (response.status === 503) {
-    return "The portfolio agent is offline right now. Use the email link in the dock to reach Miles directly.";
-  }
-
-  if (response.status === 429) {
-    return "The agent is handling a lot of questions right now. Try again in a minute.";
-  }
-
-  const data = (await response.json().catch(() => ({}))) as AgentErrorResponse;
-
-  return data.error ?? "Portfolio agent failed.";
 }
 
 function SendIcon() {
