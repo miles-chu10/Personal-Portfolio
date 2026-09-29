@@ -79,11 +79,11 @@ export const latest: TimelineItem[] = [
   {
     organization: "OpenAI",
     logo: {
-      src: "/img/logos/openai.svg",
+      src: "/img/logos/openai-blossom.svg",
       alt: "OpenAI",
-      width: 270,
-      height: 73,
-      display: "wordmark",
+      width: 20,
+      height: 20,
+      display: "mark",
     },
     roles: [
       {
@@ -101,11 +101,11 @@ export const latest: TimelineItem[] = [
   {
     organization: "Docusign",
     logo: {
-      src: "/img/logos/docusign.svg",
+      src: "/img/logos/docusign-mark.svg",
       alt: "Docusign",
-      width: 70,
-      height: 15,
-      display: "wordmark",
+      width: 20,
+      height: 20,
+      display: "mark",
     },
     roles: [
       {
@@ -120,9 +120,9 @@ export const latest: TimelineItem[] = [
     logo: {
       src: "/img/logos/ibm.svg",
       alt: "IBM",
-      width: 1075,
-      height: 401,
-      display: "wordmark",
+      width: 20,
+      height: 20,
+      display: "mark",
     },
     roles: [
       {
@@ -165,11 +165,11 @@ export const earlier: TimelineItem[] = [
   {
     organization: "UC Riverside",
     logo: {
-      src: "/img/logos/uc-riverside.svg",
+      src: "/img/logos/uc-riverside-mark.svg",
       alt: "UC Riverside",
-      width: 500,
-      height: 155,
-      display: "wordmark",
+      width: 20,
+      height: 20,
+      display: "mark",
     },
     roles: [
       {

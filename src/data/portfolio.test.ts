@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { describe, it } from "node:test";
 
 import {
@@ -33,6 +35,8 @@ describe("portfolio content", () => {
       assert.ok(row.logo.src.startsWith("/img/logos/"));
       assert.ok(row.logo.src.endsWith(".svg"));
       assert.ok(row.logo.alt.length > 0);
+      assert.equal(row.logo.display, "mark");
+      assert.ok(existsSync(join("public", row.logo.src)), row.logo.src);
       assert.ok(row.roles.length > 0);
       assert.ok(row.roles.every((role) => role.title && role.period));
     }

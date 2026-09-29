@@ -39,6 +39,10 @@ employment claims.
 Intentional divergences from the reference:
 
 - Timeline logos are local compact SVG assets, not hotlinked reference assets.
+- Every timeline row shows a 20px logo mark (decorative, `alt=""`) followed by the
+  organization name as text. OpenAI's mark is its official white Blossom, kept
+  unaltered; showing it as OpenAI's only mark is an owner decision (2026-09-29)
+  that departs from OpenAI's brand guidance (https://openai.com/brand/).
 - The site uses a system sans stack, not a custom font pairing.
 - The reference licenses/press mix is replaced by Miles-specific `Skills` and
   `Misc` sections.
