@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { ChatBubbleIcon } from "@/components/DockIcons";
 import { DockTooltip } from "@/components/DockTooltip";
 
-const offlineMessage = "Chat is unavailable right now. Use the email link in the dock to reach Miles.";
+const offlineMessage = "Chat is unavailable right now. You can reach Miles by email using the link at the top of the page.";
 
 export function PortfolioChat() {
   const [isOpen, setIsOpen] = useState(false);
