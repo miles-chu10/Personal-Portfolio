@@ -132,6 +132,10 @@ Skills and misc sections follow the same row rhythm:
 
 The footer dock is a fixed `nav` with `aria-label="Portfolio links"`.
 
+The dock no longer links to the portfolio source repository. Keep the resume
+download and ChatKit controls; the separate professional GitHub profile link
+in the header remains intentional.
+
 - Keep links compact and icon-like through `shortLabel`; each link must still
   expose the visible short label plus the descriptive full label in its
   accessible name.
@@ -194,6 +198,18 @@ secondary context in `detail` so mobile wrapping remains controlled.
 ## QA Evidence
 
 Update this section after every meaningful visual or content-system change.
+
+2026-10-01 local owner-tools/annotations pass on PR #5: lint, typecheck,
+production build, public-content snapshot consistency, and nine focused
+homepage/owner-tool tests passed. The webpack preview returned HTTP 200;
+Chromium checks at 1280, 390, and 320 pixels confirmed no horizontal overflow,
+working section navigation, a retained resume/profile link, and no repository
+dock link. Twenty row annotation targets and four narrow containers render;
+the profile header permits text selection. No private annotation metadata is
+included. Owner-tool discovery and execution both returned uncached HTTP 403,
+including requests with fabricated owner flags. WebMCP remains disabled for
+everyone because owner authentication is not configured. Real ChatGPT browser
+annotation/discovery behavior is unverified. Chat API tests were not run.
 
 | Check | Status | Notes |
 | --- | --- | --- |

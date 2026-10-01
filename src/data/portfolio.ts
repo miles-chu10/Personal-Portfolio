@@ -318,10 +318,4 @@ export const footerLinks: Link[] = [
     download: "Miles_Chu_Resume.pdf",
     placement: "utility",
   },
-  {
-    label: "Source code",
-    shortLabel: "GitHub",
-    href: "https://github.com/miles-chu10/Personal-Portfolio",
-    placement: "utility",
-  },
 ];

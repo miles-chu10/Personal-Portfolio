@@ -68,8 +68,6 @@ describe("portfolio content", () => {
       ),
     );
 
-    const sourceLink = footerLinks.find((link) => link.shortLabel === "GitHub");
-    assert.equal(sourceLink?.label, "Source code");
-    assert.match(sourceLink?.href ?? "", /^https:\/\/github\.com\//);
+    assert.equal(footerLinks.find((link) => link.shortLabel === "GitHub"), undefined);
   });
 });

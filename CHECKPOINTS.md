@@ -1,5 +1,25 @@
 # Website Checkpoints
 
+## Pending local change - annotations and owner tools (2026-10-01)
+
+- Based on PR #5 head `f92f439949248988960cc6cffac9e6057434a7b2` in the isolated
+  `codex/owner-site-tools` branch; no push, merge, or deployment.
+- Removed the source-repository dock link; retained the professional GitHub
+  profile, resume download, and existing ChatKit work. Portfolio dates unchanged.
+- Added narrow browser annotation targets for portfolio rows and profile text
+  selection using the official HTML attribute contract.
+- Prepared inspection/navigation WebMCP tools behind a server endpoint that
+  denies all discovery and execution. Owner sign-in selection and server-side
+  verification are required before enabling; the anonymous chat cookie grants
+  no owner access.
+- Passed lint, typecheck, production build, snapshot consistency, nine targeted
+  tests, loopback HTTP checks, and Chromium layout/navigation checks at 1280,
+  390, and 320 pixels. Host annotation and WebMCP integration remain unverified.
+- The approved GitHub visibility change was blocked by `Forbidden` from the
+  existing CLI; connector readback still reported public. Vercel project listing
+  succeeded, but Git binding verification was unavailable. No access settings
+  were changed. API-backed chat testing remains paused for secure key setup.
+
 This file tracks practical website versions. Each version should ship with a
 clear purpose, content source, validation gates, and known risks.
 

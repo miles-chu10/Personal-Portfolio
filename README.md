@@ -37,6 +37,39 @@ chat endpoint offline without removing the UI.
 Portfolio content lives in `src/data/portfolio.ts`. Edit the structured arrays
 there to update the homepage sections without touching layout code.
 
+## Browser annotations and owner site tools
+
+The homepage uses the documented Browser Annotation API HTML attributes for
+individual Work, Impact, and Skills rows, plus text selection in the profile
+header. These enhance the browser's own annotation mode without adding a public
+editing interface or storing feedback. Unsupported browsers render normally.
+No private metadata or annotation preview controls are attached.
+
+WebMCP integration is prepared but **disabled for everyone, including Miles**.
+This repository has no owner sign-in; its anonymous ChatKit visitor cookie is
+not owner authentication. `/api/owner/site-tools` returns `403` with `no-store`
+for both discovery and execution. No environment flag can enable it.
+
+Before enabling, choose and approve an owner sign-in provider, verify the
+session on the server against Miles's stable provider user ID, and authorize
+every operation. Check expiry/revocation and same-origin requests there.
+Do not replace the denial with a client email, hostname, query parameter,
+local-storage flag, or the ChatKit cookie. The prepared client checks access
+before registration and before every tool execution, aborts registrations on
+denial/unmount, and exposes only section text inspection and local scrolling.
+It cannot edit content, deploy, access chat history, or call a model.
+
+Contracts: [Annotations Extensibility](https://learn.chatgpt.com/docs/annotations-extensibility),
+[Site tools](https://learn.chatgpt.com/docs/webmcp), and the
+[WebMCP draft](https://webmachinelearning.github.io/webmcp/).
+Actual host discovery, annotation selection, and revocation still require
+verification in ChatGPT's built-in browser; simulated API tests do not prove
+host compatibility.
+
+The repository-source dock link is removed; the professional GitHub profile
+link remains. Link removal does not restrict repository access. Repository
+visibility is managed separately in GitHub.
+
 ## Agent API
 
 `POST /api/agent` runs the OpenAI Agents SDK portfolio assistant. Send JSON
