@@ -1,4 +1,4 @@
-import { Agent, run, tool } from "@openai/agents";
+import { Agent, run, setTracingDisabled, tool } from "@openai/agents";
 import { z } from "zod";
 
 import {
@@ -11,6 +11,12 @@ import {
   skillRows,
 } from "@/data/portfolio";
 import { MAX_AGENT_OUTPUT_TOKENS } from "@/lib/chat-limits";
+
+export function isAgentTracingEnabled() {
+  return process.env.AGENT_TRACING?.trim().toLowerCase() === "true";
+}
+
+setTracingDisabled(!isAgentTracingEnabled());
 
 const sectionSchema = z
   .enum(["profile", "timeline", "impact", "skills", "links", "all"])

@@ -66,6 +66,10 @@ Set `CHAT_ENABLED` to `false`, `0`, `off` or `no` (any case) to take the chat
 offline. On Vercel a changed environment variable only applies to new
 deployments, so redeploy after changing it.
 
+Agents SDK tracing is off by default because it would store every visitor
+question and answer in the OpenAI traces dashboard. Set `AGENT_TRACING=true` to
+turn it on for debugging (and consider telling visitors).
+
 ## Deployment
 
 Absolute URLs in metadata, the sitemap, robots, and JSON-LD are computed at
