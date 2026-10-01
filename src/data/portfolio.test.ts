@@ -26,7 +26,7 @@ describe("portfolio content", () => {
     assert.ok(earlier.length >= 2);
     assert.ok(impactRows.length >= 4);
     assert.ok(skillRows.length >= 4);
-    assert.ok(miscLinks.length >= 3);
+    assert.ok(miscLinks.length >= 2);
   });
 
   it("keeps timeline rows display-ready", () => {

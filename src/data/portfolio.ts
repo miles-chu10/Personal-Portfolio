@@ -274,12 +274,6 @@ export const skillRows: SimpleRow[] = [
 export const miscLinks: MiscLink[] = [
   {
     year: "2026",
-    title: "Personal portfolio system and checkpoints",
-    source: "GitHub",
-    href: "https://github.com/miles-chu10/Personal-Portfolio",
-  },
-  {
-    year: "2026",
     title: "Agent workflow experiments",
     source: "Local builds",
     href: "https://github.com/miles-chu10",
