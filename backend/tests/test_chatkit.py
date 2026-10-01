@@ -103,14 +103,27 @@ def test_configuration_fail_closed(monkeypatch, tmp_path):
     assert send(client, "threads.list", {}).status_code == 503
 
 
-def test_short_token_and_disable_switch_fail_closed(monkeypatch, tmp_path):
+@pytest.mark.parametrize("flag", ["false", "FALSE", " False ", "0", "off", "OFF", "no", "NO"])
+def test_short_token_and_disable_switch_fail_closed(monkeypatch, tmp_path, flag):
   url = f"sqlite:///{tmp_path / 'db'}"
   store = SQLStore(url)
   short = TestClient(create_app(database_url=url, backend_token="short", api_key="fake", server=FakeServer(store)))
   assert send(short, "threads.list", {}).status_code == 503
-  monkeypatch.setenv("CHAT_ENABLED", "false")
+  monkeypatch.setenv("CHAT_ENABLED", flag)
   disabled = TestClient(create_app(database_url=url, backend_token=TOKEN, api_key="fake", server=FakeServer(store)))
   assert send(disabled, "threads.list", {}).status_code == 503
+
+
+@pytest.mark.parametrize("flag", ["true", "TRUE", None])
+def test_true_or_unset_chat_enabled_keeps_service_enabled(monkeypatch, tmp_path, flag):
+  if flag is None:
+    monkeypatch.delenv("CHAT_ENABLED", raising=False)
+  else:
+    monkeypatch.setenv("CHAT_ENABLED", flag)
+  url = f"sqlite:///{tmp_path / 'db'}"
+  store = SQLStore(url)
+  client = TestClient(create_app(database_url=url, backend_token=TOKEN, api_key="fake", server=FakeServer(store)))
+  assert send(client, "threads.list", {}).status_code == 200
 
 
 def test_public_snapshot_keeps_complete_nested_projects():

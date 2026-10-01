@@ -7,7 +7,7 @@ export async function POST(request: Request) {
   return proxyChatKit(request, {
     backendUrl: process.env.CHATKIT_BACKEND_URL?.trim() || "",
     token: process.env.CHATKIT_BACKEND_TOKEN?.trim() || "",
-    enabled: process.env.CHAT_ENABLED !== "false",
+    enabled: !["false", "0", "off", "no"].includes(process.env.CHAT_ENABLED?.trim().toLowerCase() || ""),
     // Services use internal hosts. These origins come from deployment settings,
     // rather than a caller's forwarded-host header.
     allowedOrigins: [

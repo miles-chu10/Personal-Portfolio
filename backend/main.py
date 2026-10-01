@@ -132,7 +132,7 @@ def create_app(*, database_url: str | None = None, backend_token: str | None = N
     database_url = "postgresql+psycopg://" + database_url[len("postgresql://"):]
   if not database_url and not production:
     database_url = f"sqlite:///{Path(__file__).with_name('chatkit.sqlite3')}"
-  configured = bool(database_url and backend_token and len(backend_token) >= 32 and api_key and os.getenv("CHAT_ENABLED", "true").lower() != "false")
+  configured = bool(database_url and backend_token and len(backend_token) >= 32 and api_key and os.getenv("CHAT_ENABLED", "true").strip().lower() not in {"false", "0", "off", "no"})
   try:
     global_limit = int(os.getenv("CHATKIT_GLOBAL_PER_MINUTE", "120"))
     if not 1 <= global_limit <= 1000:
