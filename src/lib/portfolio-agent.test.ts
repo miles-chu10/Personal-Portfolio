@@ -5,6 +5,7 @@ import { MAX_AGENT_OUTPUT_TOKENS } from "@/lib/chat-limits";
 
 import {
   createPortfolioAgent,
+  isAgentTracingEnabled,
   runPortfolioAgent,
   runPortfolioAgentStream,
   type PortfolioAgentRunner,
@@ -92,6 +93,29 @@ describe("portfolio agent", () => {
       () => runPortfolioAgent("What are the impact metrics?", runner),
       /empty response/,
     );
+  });
+});
+
+describe("agent tracing switch", () => {
+  it("keeps Agents SDK tracing off unless AGENT_TRACING is true", () => {
+    const current = process.env.AGENT_TRACING;
+
+    try {
+      delete process.env.AGENT_TRACING;
+      assert.equal(isAgentTracingEnabled(), false);
+
+      process.env.AGENT_TRACING = "false";
+      assert.equal(isAgentTracingEnabled(), false);
+
+      process.env.AGENT_TRACING = " TRUE ";
+      assert.equal(isAgentTracingEnabled(), true);
+    } finally {
+      if (current === undefined) {
+        delete process.env.AGENT_TRACING;
+      } else {
+        process.env.AGENT_TRACING = current;
+      }
+    }
   });
 });
 

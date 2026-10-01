@@ -151,7 +151,7 @@ The footer dock is a fixed `nav` with `aria-label="Portfolio links"`.
 All portfolio facts live in `src/data/portfolio.ts`.
 
 - `profile` drives the header (name, title, and a one-line location/email
-  contact row) and the dock email link.
+  contact row) and the header email link.
 - `latest` and `earlier` render timeline sections.
 - `impactRows` renders metric-led proof points.
 - `skillRows` renders the skills table.

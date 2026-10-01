@@ -16,7 +16,7 @@ describe("homepage static render", () => {
   it("keeps the PDF and GitHub dock controls discoverable by name", () => {
     const markup = renderHome();
     const downloadControl =
-      markup.match(/<a[^>]*aria-label="Download resume"[^>]*>/)?.[0] ?? "";
+      markup.match(/<a[^>]*aria-label="Download resume \(PDF\)"[^>]*>/)?.[0] ?? "";
     const sourceControl =
       markup.match(/<a[^>]*aria-label="Source code"[^>]*>/)?.[0] ?? "";
 

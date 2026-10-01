@@ -1,16 +1,42 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { AGENT_RATE_LIMIT, MAX_QUESTION_LENGTH } from "@/lib/chat-limits";
+import {
+  AGENT_RATE_LIMIT,
+  MAX_QUESTION_LENGTH,
+  MAX_REQUEST_BYTES,
+} from "@/lib/chat-limits";
 
 import { POST } from "./route";
+
+let nextClient = 1;
 
 function makeRequest(body: string, headers: Record<string, string> = {}) {
   return new Request("http://localhost/api/agent", {
     method: "POST",
     body,
-    headers,
+    headers: { "x-forwarded-for": `198.51.100.${nextClient++}`, ...headers },
   });
+}
+
+async function withChatEnabled(value: string | undefined, run: () => Promise<void>) {
+  const current = process.env.CHAT_ENABLED;
+
+  if (value === undefined) {
+    delete process.env.CHAT_ENABLED;
+  } else {
+    process.env.CHAT_ENABLED = value;
+  }
+
+  try {
+    await run();
+  } finally {
+    if (current === undefined) {
+      delete process.env.CHAT_ENABLED;
+    } else {
+      process.env.CHAT_ENABLED = current;
+    }
+  }
 }
 
 async function withoutApiKey(run: () => Promise<void>) {
@@ -179,6 +205,69 @@ describe("portfolio agent route", () => {
       assert.deepEqual(await limited.json(), {
         error: "Too many requests. Try again in a minute.",
       });
+    });
+  });
+
+  it("treats common false spellings of CHAT_ENABLED as offline", async () => {
+    for (const value of ["FALSE", " false ", "0", "off", "No"]) {
+      await withChatEnabled(value, async () => {
+        const response = await POST(
+          makeRequest(JSON.stringify({ question: "What does Miles do?" })),
+        );
+
+        assert.equal(response.status, 503, value);
+        assert.deepEqual(await response.json(), {
+          error: "Portfolio agent is offline right now.",
+        });
+      });
+    }
+  });
+
+  it("keeps chat enabled for true or unset CHAT_ENABLED", async () => {
+    for (const value of ["true", "TRUE", undefined]) {
+      await withChatEnabled(value, () =>
+        withoutApiKey(async () => {
+          const response = await POST(
+            makeRequest(JSON.stringify({ question: "What does Miles do?" })),
+          );
+
+          assert.equal(response.status, 503);
+          assert.deepEqual(await response.json(), {
+            error: "Portfolio agent is not configured.",
+          });
+        }),
+      );
+    }
+  });
+
+  it("answers the kill switch before reading the body", async () => {
+    await withChatEnabled("false", async () => {
+      const response = await POST(makeRequest("not json"));
+
+      assert.equal(response.status, 503);
+    });
+  });
+
+  it("rejects oversized declared bodies before parsing them", async () => {
+    const response = await POST(
+      makeRequest("not json", { "content-length": String(MAX_REQUEST_BYTES + 1) }),
+    );
+
+    assert.equal(response.status, 413);
+    assert.deepEqual(await response.json(), { error: "Request body is too large." });
+  });
+
+  it("rate limits before reading the body", async () => {
+    await withoutApiKey(async () => {
+      const headers = { "x-forwarded-for": "203.0.113.99" };
+
+      for (let index = 0; index < AGENT_RATE_LIMIT; index += 1) {
+        await POST(makeRequest("not json", headers));
+      }
+
+      const limited = await POST(makeRequest("not json", headers));
+
+      assert.equal(limited.status, 429);
     });
   });
 });

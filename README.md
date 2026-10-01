@@ -59,13 +59,27 @@ per-instance rate limit, and caps model output tokens before calling the SDK.
 Use Vercel spend limits or a shared external rate-limit store if the public
 launch needs a hard account-wide request budget.
 
+Failures that happen before the first token (for example exhausted OpenAI
+credits) return a JSON `503`, `429` or `500` so the chat panel can show its
+offline copy; only a failure after streaming has started breaks the stream.
+Set `CHAT_ENABLED` to `false`, `0`, `off` or `no` (any case) to take the chat
+offline. On Vercel a changed environment variable only applies to new
+deployments, so redeploy after changing it.
+
+Agents SDK tracing is off by default because it would store every visitor
+question and answer in the OpenAI traces dashboard. Set `AGENT_TRACING=true` to
+turn it on for debugging (and consider telling visitors).
+
 ## Deployment
 
-Absolute URLs in metadata, the sitemap, and robots derive from
-`NEXT_PUBLIC_SITE_URL` when set, then fall back to Vercel's
-`VERCEL_PROJECT_PRODUCTION_URL`, then `http://localhost:3000`. No extra
-configuration is needed on Vercel; attaching a custom domain updates the
-production URL automatically.
+Absolute URLs in metadata, the sitemap, robots, and JSON-LD are computed at
+build time by `src/lib/site.ts`: `NEXT_PUBLIC_SITE_URL` when set, then Vercel's
+`VERCEL_PROJECT_PRODUCTION_URL`, then `http://localhost:3000`. Set
+`NEXT_PUBLIC_SITE_URL=https://milesdchu.com` in the Vercel Production
+environment and redeploy after changing it or the domain, because the values
+are baked into the build. After each production deploy run
+`npm run smoke:live` (it defaults to `https://milesdchu.com`; pass another
+origin as the first argument).
 
 Design rules live in `DESIGN.md`. Version acceptance gates and release notes
 live in `CHECKPOINTS.md`.
