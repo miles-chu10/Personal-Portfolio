@@ -132,6 +132,10 @@ Skills and misc sections follow the same row rhythm:
 
 The footer dock is a fixed `nav` with `aria-label="Portfolio links"`.
 
+The dock no longer links to the portfolio source repository. Keep the resume
+download and ChatKit controls; the separate professional GitHub profile link
+in the header remains intentional.
+
 - Keep links compact and icon-like through `shortLabel`; each link must still
   expose the visible short label plus the descriptive full label in its
   accessible name.
@@ -167,10 +171,14 @@ secondary context in `detail` so mobile wrapping remains controlled.
 - Keep semantic regions: `main`, `header`, `section`, `article`, and `nav`.
 - Every section heading must be connected with `aria-labelledby`.
 - Link-only controls need either visible text or a clear `aria-label`.
-- The chat panel is a `role="dialog"` disclosure: opening moves focus to the
-  textarea, Escape closes it, and closing returns focus to the dock toggle.
-- Chat controls must remain focusable while a request is busy; use guarded
-  `aria-disabled` states instead of disabling the focused textarea or buttons.
+- The chat panel is a `role="dialog"` disclosure. Opening focuses ChatKit's
+  composer when ready; closing returns focus to the dock toggle. The close
+  button remains available during loading and generation.
+- Escape closes the panel when focus is in its page-owned header. Keyboard
+  events inside ChatKit's cross-origin iframe do not reach the page; the
+  visible close control is the keyboard-accessible way to close from there.
+- ChatKit manages composer and transcript interaction. Keep the page-owned
+  close control focusable while a request is busy.
 - The chat transcript must be keyboard-scrollable and streaming updates should
   announce completion/errors through a separate screen-reader-only status
   region, not token-by-token message list updates.
@@ -182,14 +190,26 @@ secondary context in `detail` so mobile wrapping remains controlled.
 - Preserve `focus-visible` outlines and reduced-motion handling.
 - Hover effects should be subtle: divider strengthening, text color change, or
   the misc arrow shifting by at most `0.125rem`.
-- Agent responses should stay plain text unless a markdown renderer is added to
-  the chat component.
+- ChatKit renders assistant markdown; the original `/api/agent` endpoint still
+  streams plain text for rollback.
 - Validate that mobile and desktop have no horizontal overflow and no text
   overlap before shipping.
 
 ## QA Evidence
 
 Update this section after every meaningful visual or content-system change.
+
+2026-10-01 local owner-tools/annotations pass on PR #5: lint, typecheck,
+production build, public-content snapshot consistency, and nine focused
+homepage/owner-tool tests passed. The webpack preview returned HTTP 200;
+Chromium checks at 1280, 390, and 320 pixels confirmed no horizontal overflow,
+working section navigation, a retained resume/profile link, and no repository
+dock link. Twenty row annotation targets and four narrow containers render;
+the profile header permits text selection. No private annotation metadata is
+included. Owner-tool discovery and execution both returned uncached HTTP 403,
+including requests with fabricated owner flags. WebMCP remains disabled for
+everyone because owner authentication is not configured. Real ChatGPT browser
+annotation/discovery behavior is unverified. Chat API tests were not run.
 
 | Check | Status | Notes |
 | --- | --- | --- |

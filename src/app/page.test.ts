@@ -13,23 +13,18 @@ function renderHome() {
 }
 
 describe("homepage static render", () => {
-  it("keeps the PDF and GitHub dock controls discoverable by name", () => {
+  it("keeps the resume and professional profile but removes the repository dock link", () => {
     const markup = renderHome();
     const downloadControl =
       markup.match(/<a[^>]*aria-label="Download resume \(PDF\)"[^>]*>/)?.[0] ?? "";
-    const sourceControl =
-      markup.match(/<a[^>]*aria-label="Source code"[^>]*>/)?.[0] ?? "";
 
     assert.notEqual(downloadControl, "");
     assert.match(downloadControl, /href="\/Miles_Chu_Resume\.pdf"/);
     assert.match(downloadControl, /download="Miles_Chu_Resume\.pdf"/);
     assert.match(markup, />PDF<\/span>/);
-    assert.notEqual(sourceControl, "");
-    assert.match(
-      sourceControl,
-      /href="https:\/\/github\.com\/miles-chu10\/Personal-Portfolio"/,
-    );
-    assert.match(markup, /<span[^>]*>Source code<\/span>/);
+    assert.doesNotMatch(markup, /aria-label="Source code"/);
+    assert.doesNotMatch(markup, /href="https:\/\/github\.com\/miles-chu10\/Personal-Portfolio"/);
+    assert.match(markup, /href="https:\/\/github\.com\/miles-chu10"/);
   });
 
   it("keeps a period associated with every role when duplicate dates are hidden visually", () => {

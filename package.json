@@ -9,11 +9,18 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "test": "node --test --import tsx",
-    "smoke:live": "node scripts/smoke-live.mjs"
+    "smoke:live": "node scripts/smoke-live.mjs",
+    "export:chatkit": "tsx scripts/export-chatkit-data.ts",
+    "check:chatkit-data": "tsx scripts/export-chatkit-data.ts --check",
+    "dev:chatkit": "npm run export:chatkit && node scripts/dev-chatkit.mjs",
+    "prebuild": "npm run check:chatkit-data",
+    "pretest": "npm run check:chatkit-data"
   },
   "dependencies": {
     "@openai/agents": "^0.12.0",
+    "@openai/chatkit-react": "^1.6.1",
     "clsx": "^2.1.1",
+    "lucide-react": "^1.23.0",
     "next": "16.3.6",
     "react": "19.3.0",
     "react-dom": "19.3.0",

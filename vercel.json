@@ -1,4 +1,16 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": "nextjs"
+  "services": {
+    "web": {
+      "root": ".",
+      "framework": "nextjs",
+      "bindings": [
+        { "type": "service", "service": "chatkit", "format": "url", "env": "CHATKIT_BACKEND_URL" }
+      ]
+    },
+    "chatkit": { "root": "backend/", "framework": "fastapi", "entrypoint": "main:app" }
+  },
+  "rewrites": [
+    { "source": "/(.*)", "destination": { "service": "web" } }
+  ]
 }

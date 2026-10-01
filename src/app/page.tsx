@@ -2,6 +2,7 @@ import Image from "next/image";
 
 import { FooterDock } from "@/components/FooterDock";
 import { HeaderSocialLinks } from "@/components/HeaderSocialLinks";
+import { OwnerSiteTools } from "@/components/OwnerSiteTools";
 import {
   earlier,
   footerLinks,
@@ -20,7 +21,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-background text-foreground">
       <div className="mx-auto w-full max-w-[42rem] px-4 pb-28 pt-24 sm:px-6 sm:pt-28">
-        <header className="mb-16">
+        <header className="mb-16" oai-annotation-container-text="">
           <h1 className="text-[1.85rem] font-semibold leading-none text-foreground sm:text-[2rem]">
             {profile.name}
           </h1>
@@ -47,6 +48,7 @@ export default function Home() {
       </div>
 
       <FooterDock links={footerLinks} />
+      <OwnerSiteTools />
     </main>
   );
 }
@@ -81,7 +83,7 @@ function TimelineGroup({
       <h3 className="mb-3 text-[0.82rem] font-normal leading-4 text-subtle">
         {title}
       </h3>
-      <div>
+      <div oai-annotation-container="">
         {items.map((item) => (
           <TimelineRow key={item.organization} item={item} />
         ))}
@@ -94,7 +96,7 @@ function TimelineRow({ item }: { item: TimelineItem }) {
   const isWordmark = item.logo.display === "wordmark";
 
   return (
-    <article className="group -mx-2 rounded-[0.35rem] border-t border-line px-2 py-4 transition-colors hover:border-line-strong hover:bg-foreground/[0.025] focus-within:border-line-strong focus-within:bg-foreground/[0.025]">
+    <article oai-annotatable={item.organization} className="group -mx-2 rounded-[0.35rem] border-t border-line px-2 py-4 transition-colors hover:border-line-strong hover:bg-foreground/[0.025] focus-within:border-line-strong focus-within:bg-foreground/[0.025]">
       <div className="grid gap-y-3 sm:grid-cols-[7.5rem_minmax(0,1fr)] sm:gap-x-4 sm:gap-y-0">
         <h3 className="flex min-w-0 items-center gap-2 text-[0.95rem] font-medium leading-5 text-foreground">
           <Image
@@ -167,11 +169,12 @@ function ImpactSection({ rows }: { rows: ImpactRow[] }) {
   return (
     <section id="impact" aria-labelledby="impact-heading">
       <SectionHeading title="Impact" />
-      <div className="grid border-t border-line sm:grid-cols-2">
+      <div oai-annotation-container="" className="grid border-t border-line sm:grid-cols-2">
         {rows.map((row) => (
           <div
             className="border-b border-line py-4 sm:odd:border-r sm:odd:pr-5 sm:even:pl-5"
             key={`${row.metric}-${row.label}`}
+            oai-annotatable={row.label}
           >
             <p className="text-[1.25rem] font-semibold leading-6 text-foreground">
               {row.metric}
@@ -193,11 +196,12 @@ function SkillsSection({ rows }: { rows: SimpleRow[] }) {
   return (
     <section id="skills" aria-labelledby="skills-heading">
       <SectionHeading title="Skills" />
-      <div>
+      <div oai-annotation-container="">
         {rows.map((row) => (
           <div
             className="grid grid-cols-[minmax(0,1fr)_3.5rem] gap-x-3 gap-y-1 border-t border-line py-4 sm:grid-cols-[8.5rem_minmax(0,1fr)_3.5rem] sm:gap-x-4 sm:gap-y-0"
             key={row.label}
+            oai-annotatable={row.label}
           >
             <p className="col-start-1 row-start-1 min-w-0 text-[0.95rem] font-medium leading-5 text-foreground">
               {row.label}

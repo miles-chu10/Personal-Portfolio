@@ -89,12 +89,12 @@ export const latest: TimelineItem[] = [
       {
         title: "Member of GTM Staff",
         detail: "executive pipeline reporting, RevOps intake, Statsig GTM readiness",
-        period: "Oct '25-May '26",
+        period: "Oct '25-Jul '26",
       },
       {
         title: "AI-assisted operating workflows",
         detail: "Google Apps Script, Slack routing, Custom GPT workflows",
-        period: "Oct '25-May '26",
+        period: "Oct '25-Jul '26",
       },
     ],
   },
@@ -274,12 +274,6 @@ export const skillRows: SimpleRow[] = [
 export const miscLinks: MiscLink[] = [
   {
     year: "2026",
-    title: "Personal portfolio system and checkpoints",
-    source: "GitHub",
-    href: "https://github.com/miles-chu10/Personal-Portfolio",
-  },
-  {
-    year: "2026",
     title: "Agent workflow experiments",
     source: "Local builds",
     href: "https://github.com/miles-chu10",
@@ -316,12 +310,6 @@ export const footerLinks: Link[] = [
     shortLabel: "PDF",
     href: "/Miles_Chu_Resume.pdf",
     download: "Miles_Chu_Resume.pdf",
-    placement: "utility",
-  },
-  {
-    label: "Source code",
-    shortLabel: "GitHub",
-    href: "https://github.com/miles-chu10/Personal-Portfolio",
     placement: "utility",
   },
 ];
